@@ -21,7 +21,9 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.STRING,
     img: DataTypes.STRING,
     status: DataTypes.STRING,
-    userId: DataTypes.INTEGER
+    publishedAt: DataTypes.STRING,
+    userId: DataTypes.INTEGER,
+    isPopular: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Article',

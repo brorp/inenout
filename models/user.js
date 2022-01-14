@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const {getSalt} = require('../helpers/bcrypt')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -15,13 +16,78 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    username: DataTypes.STRING,
-    email: DataTypes.STRING,
-    password: DataTypes.STRING,
-    phoneNumber: DataTypes.STRING,
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        args: true,
+        msg: 'Username must be unique',
+      },
+      validate: {
+        notNull: {
+          msg: 'Username harus diisi',
+        },
+        notEmpty: {
+          msg: 'Username harus diisi',
+        },
+      },
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: {
+        args: true,
+        msg: 'Email must be unique',
+      },
+      validate: {
+        notNull: {
+          msg: 'Email harus diisi',
+        },
+        isEmail: {
+          msg: 'Format email tidak valid',
+        },
+        notEmpty: {
+          msg: 'Email harus diisi',
+        },
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Password harus diisi',
+        },
+        notEmpty: {
+          msg: 'Password harus diisi',
+        },
+      },
+    },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Nomor telepon harus diisi',
+        },
+        notEmpty: {
+          msg: 'Nomor telepon harus diisi',
+        },
+        len: {
+          args: [0, 15],
+          msg: 'Nomor maksimal 15 digit',
+        },
+      },
+    },
+    fullName: DataTypes.STRING,
+    profilePic: DataTypes.STRING,
     role: DataTypes.STRING,
     status: DataTypes.STRING,
-  }, {
+  }, { hooks: {
+    beforeCreate: (user) => {
+      user.password = getSalt(user.password)
+    }
+  },
     sequelize,
     modelName: 'User',
   });

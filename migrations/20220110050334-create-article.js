@@ -31,8 +31,14 @@ module.exports = {
       status: {
         type: Sequelize.STRING
       },
+      publishedAt: {
+        type: Sequelize.STRING
+      },
       userId: {
         type: Sequelize.INTEGER
+      },
+      isPopular: {
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
