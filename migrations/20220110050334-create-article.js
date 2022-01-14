@@ -37,9 +37,6 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER
       },
-      isPopular: {
-        type: Sequelize.BOOLEAN
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

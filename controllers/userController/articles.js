@@ -1,18 +1,25 @@
-const {Article, User, Comment, Category, SubCategory, Banner, CommentLike} = require('../../models')
+const {Article, User, Comment, Category, SubCategory, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models')
 
 class ArticleController {
     static async getBanner(req, res, next){
         try {
-            const response = await Banner.findAll({
-                limit: 3
-            })
+            const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
             res.status(200).json(response)
         } catch (error) {
             next(error)
         }
     }
 
-    static async getArticle(req, res, next){
+    static async getFeaturedArticle(req, res, next){
+        try {
+            const response = await FeaturedArticle.findAll({where: {status: 'Active', isHomepage: true}})
+            res.status(200).json(response)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    static async getArticleHome(req, res, next){
         try {
             const params = req.query.tag
             const response = await Article.findAll({
@@ -22,7 +29,8 @@ class ArticleController {
                 where: [{'tag': params},{'status': 'Active'}],
                 order: [
                     ['publishedAt', 'DESC']
-                ]
+                ],
+                limit: 20
             })
             res.status(200).json(response)
         } catch (err) {
@@ -44,6 +52,24 @@ class ArticleController {
         }
     }
 
+    static async getCategoriesForForm(req, res, next){
+        try {
+            const response = Category.findAll({include: {model: SubCategory}})
+            res.status(200).json({response})
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async submitArticle(req, res, next){
+        try {
+            const {attachment, img} = req.body
+            await SubmittedArticle.create({attachment, img})
+            res.status(201).json({msg: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
+        } catch (err) {
+            next(err)
+        }
+    }
     // static async getComment(req, res, next){
     //     try {
     //         const {articleId} = req.params

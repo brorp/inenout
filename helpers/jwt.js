@@ -9,6 +9,10 @@ const verifyToken = (token) => {
     return jwt.verify(token, key)
 }
 
+const signPasswordLink = (data, password) => {
+    return jwt.sign(data, (privateKey + password), {expiresIn: '15m'})
+}
+
 const verifyLink = (token, password) => {
     return jwt.verify(token, (privateKey + password))
 }
@@ -17,4 +21,4 @@ const decodeJwt = (token) => {
     return jwt.decode(token)
 }
 
-module.exports = {signToken, verifyToken, verifyLink, decodeJwt}
+module.exports = {signToken, verifyToken, signPasswordLink, verifyLink, decodeJwt}

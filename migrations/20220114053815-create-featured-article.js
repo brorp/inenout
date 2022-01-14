@@ -1,41 +1,38 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('FeaturedArticles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
-        type: Sequelize.STRING,
-        unique: true
-      },
-      email: {
-        type: Sequelize.STRING,
-        unique: true
-      },
-      password: {
+      title: {
         type: Sequelize.STRING
       },
-      phoneNumber: {
+      caption: {
         type: Sequelize.STRING
       },
-      fullName: {
+      articleId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "Articles",
+            key: 'id'
+          },
+          onUpdate: 'cascade',
+          onDelete: 'cascade'
+        }
+      },
+      img: {
         type: Sequelize.STRING
       },
-      profilePic: {
-        type: Sequelize.STRING
-      },
-      role: {
-        type: Sequelize.STRING
+      isHomepage: {
+        type: Sequelize.BOOLEAN
       },
       status: {
         type: Sequelize.STRING
-      },
-      isSubscribed: {
-        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +45,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('FeaturedArticles');
   }
 };

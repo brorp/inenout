@@ -11,8 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.Post, { foreignKey: "userId"})
+      User.hasMany(models.Article, { foreignKey: "userId"})
       User.hasMany(models.Comment, { foreignKey: "userId" })
+      User.hasMany(models.SubmittedArticle, { foreignKey: "userId" })
     }
   };
   User.init({
@@ -79,13 +80,30 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    fullName: DataTypes.STRING,
+    fullName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Nomor telepon harus diisi',
+        },
+        notEmpty: {
+          msg: 'Nomor telepon harus diisi',
+        },
+        len: {
+          args: [0, 15],
+          msg: 'Nomor maksimal 15 digit',
+        },
+      },
+    },
     profilePic: DataTypes.STRING,
     role: DataTypes.STRING,
     status: DataTypes.STRING,
+    isSubscribed: DataTypes.BOOLEAN
   }, { hooks: {
     beforeCreate: (user) => {
       user.password = getSalt(user.password)
+      user.status = "Inactive"
     }
   },
     sequelize,

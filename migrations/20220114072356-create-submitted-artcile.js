@@ -1,32 +1,21 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Banners', {
+    await queryInterface.createTable('SubmittedArticles', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      caption: {
+      attachment: {
         type: Sequelize.STRING
       },
-      imgBanner: {
+      img: {
         type: Sequelize.STRING
       },
-      articleId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: "Articles",
-            key: 'id'
-          },
-          onUpdate: 'cascade',
-          onDelete: 'cascade'
-        }
-      },
-      status: {
-        type: Sequelize.STRING,
+      userId: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -39,6 +28,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Banners');
+    await queryInterface.dropTable('SubmittedArticles');
   }
 };

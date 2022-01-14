@@ -13,18 +13,33 @@ module.exports = (sequelize, DataTypes) => {
       Article.belongsTo(models.User, { foreignKey: "userId" });
       Article.hasMany(models.Comment, { foreignKey: "articleId" })
       Article.hasOne(models.Banner, { foreignKey: "articleId" });
+      Article.hasOne(models.FeaturedArticle, { foreignKey: "articleId" });
     }
   };
   Article.init({
     title: DataTypes.STRING,
     tag: DataTypes.INTEGER,
     content: DataTypes.STRING,
-    img: DataTypes.STRING,
+    img: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Mohon masukkan gambar',
+        },
+        notEmpty: {
+          msg: 'Mohon masukkan gambar',
+        }
+      },
+    },
     status: DataTypes.STRING,
     publishedAt: DataTypes.STRING,
-    userId: DataTypes.INTEGER,
-    isPopular: DataTypes.BOOLEAN
-  }, {
+    userId: DataTypes.INTEGER
+  }, { hooks: {
+    beforeCreate: (article) => {
+      article.status = "Inactive"
+    }
+  },
     sequelize,
     modelName: 'Article',
   });

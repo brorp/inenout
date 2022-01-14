@@ -11,16 +11,14 @@ let axiosInstance = axios.create({
   }
 })
 
-module.exports = axiosInstance
 const imageKitMiddleware = async (req, res, next) => {
     try {
         console.log(req.file)
         if(!req.file){
-            throw {name:`notFound`}
+            throw {name:`notfound`}
         }
-
-        if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
-          throw { name: 'invalidpicformat' };
+        if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg'&& req.file.mimetype !== 'image/pdf') {
+            throw { name: 'invalidformatfile' };
         }
 
         form.append('file', req.file.buffer.toString('base64'))
@@ -31,7 +29,12 @@ const imageKitMiddleware = async (req, res, next) => {
             ...form.getHeaders()
           }
         })
-        req.body.imgUrl = response.data.url
+        if(req.body.img){
+            req.body.img = response.data.url
+        }
+        if(req.body.attachment){
+            req.body.attachment = response.data.url
+        }
         next()
         } 
     catch (err) {

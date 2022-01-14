@@ -17,7 +17,11 @@ module.exports = (sequelize, DataTypes) => {
   SubCategory.init({
     name: DataTypes.STRING,
     categoryId: DataTypes.INTEGER
-  }, {
+  }, { hooks: {
+    beforeCreate: (featuredArticle) => {
+      featuredArticle.status = "Active"
+    }
+  },
     sequelize,
     modelName: 'SubCategory',
   });

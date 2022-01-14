@@ -1,5 +1,5 @@
 const { comparePassword} = require('../../helpers/bcrypt')
-const { signToken } = require('../../helpers/jwt')
+const { signToken, signPasswordLink } = require('../../helpers/jwt')
 const {User} = require('../../models')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const redis = require('../config/redis')
@@ -36,7 +36,7 @@ class AuthController {
             const {status} = "Active"
             const response = User.create({username, email, password, phoneNumber, fullName, role, status})
             const OTP = String(Math.floor(Math.random() * 999999));
-            transporter.sendMail(mailOtp(userTransaction.email, OTP), async (error) => {
+            transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
               try {
                 if(error){
                   throw {
@@ -44,13 +44,16 @@ class AuthController {
                   };
                 } else{
                   const otpToken = jwtSign({
-                    id: userTransaction.id,
-                    email: userTransaction.email,
+                    id: response.id,
+                    email: response.email,
                   });
-                  await redis.set(`${userTransaction.id}`, OTP, 'ex', 120);
+                  await redis.set(`${response.id}`, OTP, 'ex', 120);
+                  if(req.body.otp !== OTP){
+                      throw{name: 'invalidotp'}
+                  }
                   res.status(201).json({
-                    message: `OTP was sent to ${userTransaction.email}.`,
-                    id: userTransaction.id,
+                    message: `OTP dikirim ke ${response.email}.`,
+                    id: response.id,
                     token: otpToken,
                   });
                 };
@@ -58,7 +61,6 @@ class AuthController {
                 next(error);
               };
             });
-            res.status(201).json(response)
         } catch (err) {
             next(err)
         }

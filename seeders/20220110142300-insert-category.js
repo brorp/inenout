@@ -3,6 +3,10 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const data = [{
+      name: "ENterview",
+      updatedAt: new Date (),
+      createdAt: new Date ()
+    },{
       name: "ENtree",
       updatedAt: new Date (),
       createdAt: new Date ()
@@ -16,6 +20,10 @@ module.exports = {
       createdAt: new Date ()
     },{
       name: "ENpeople",
+      updatedAt: new Date (),
+      createdAt: new Date ()
+    },{
+      name: "ENtizen",
       updatedAt: new Date (),
       createdAt: new Date ()
     }]
