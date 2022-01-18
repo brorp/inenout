@@ -1,11 +1,11 @@
-const {User} = require('../../models')
+const {Admin} = require('../../models')
 
-class authAdminController{
+class AuthAdminController{
     static async loginAdmin (req, res, next) {
         try {
             const {email, password} = req.body
-            let response = await User.findOne({
-                where: [{email},{'role': 'Admin'}]
+            let response = await Admin.findOne({
+                where: [{email},{status: 'Active'}]
             })
             if(response && comparePassword(password, response.password)){
                 const access_token = signToken({
@@ -24,5 +24,7 @@ class authAdminController{
         }
     }
 
-    static async 
+    static
 }
+
+module.exports = AuthAdminController

@@ -4,35 +4,17 @@ const {
 } = require('sequelize');
 const {getSalt} = require('../helpers/bcrypt')
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Admin extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.Article, { foreignKey: "userId"})
-      User.hasMany(models.Comment, { foreignKey: "userId" })
-      User.hasMany(models.SubmittedArticle, { foreignKey: "userId" })
+      // define association here
     }
   };
-  User.init({
-    username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: {
-        args: true,
-        msg: 'Username must be unique',
-      },
-      validate: {
-        notNull: {
-          msg: 'Username harus diisi',
-        },
-        notEmpty: {
-          msg: 'Username harus diisi',
-        },
-      },
-    },
+  Admin.init({
     email: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -64,22 +46,6 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    phoneNumber: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Nomor telepon harus diisi',
-        },
-        notEmpty: {
-          msg: 'Nomor telepon harus diisi',
-        },
-        len: {
-          args: [0, 15],
-          msg: 'Nomor maksimal 15 digit',
-        },
-      },
-    },
     fullName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -92,10 +58,7 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    profilePic: DataTypes.STRING,
-    role: DataTypes.STRING,
-    status: DataTypes.STRING,
-    isSubscribed: DataTypes.BOOLEAN
+    status: DataTypes.STRING
   }, { hooks: {
     beforeCreate: (user) => {
       user.password = getSalt(user.password)
@@ -103,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   },
     sequelize,
-    modelName: 'User',
+    modelName: 'Admin',
   });
-  return User;
+  return Admin;
 };

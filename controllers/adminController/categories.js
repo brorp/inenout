@@ -3,7 +3,17 @@ const {Category, SubCategory} = require('../../models')
 class CategoryAdminController {
     static async getCategories (req, res, next){
         try {
-            const response = await Category.findAll({include: {model: SubCategory}})
+            const response = await Category.findAll()
+            res.status(200).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getCategoriesById (req, res, next){
+        try {
+            const {id} = req.params
+            const response = await Category.findByPk({where: {id}})
             res.status(200).json(response)
         } catch (err) {
             next(err)
@@ -29,6 +39,15 @@ class CategoryAdminController {
             res.status(201).json({
                 msg: `Kategori ${response} berhasil diedit`
             })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getSubCategories(req, res, next){
+        try {
+            const response = await Category.findAll({where: {categoryId: req.params.id}})
+            res.status(200).json(response)
         } catch (err) {
             next(err)
         }
