@@ -23,8 +23,6 @@ class AuthAdminController{
             next(err)
         }
     }
-
-    static
 }
 
 module.exports = AuthAdminController

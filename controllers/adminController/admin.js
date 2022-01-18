@@ -22,10 +22,11 @@ class AdminController {
     static async createAdmin(req, res, next){
         try {
             const {username, email, password, fullName} = req.body
+            const {role} = 'Admin'
             if(req.body.password !== req.body.password2){
                 throw {name: 'passwordnotmatch'}
             }
-            const response = await Admin.create({username, email, password, fullName})
+            const response = await Admin.create({username, email, password, fullName, role})
             res.status(201).json({msg: `Admin ${response.email} berhasil didaftarkan`})
         } catch (err) {
             next(err)

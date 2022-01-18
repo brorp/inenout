@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     status: DataTypes.STRING,
   }, { hooks: {
-    beforeCreate: (featuredArticle) => {
-      featuredArticle.status = "Active"
+    beforeCreate: (category) => {
+      category.status = "Active"
     }
   },
     sequelize,

@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     categoryId: DataTypes.INTEGER
   }, { hooks: {
-    beforeCreate: (featuredArticle) => {
-      featuredArticle.status = "Active"
+    beforeCreate: (subcategory) => {
+      subcategory.status = "Active"
     }
   },
     sequelize,

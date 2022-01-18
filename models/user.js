@@ -99,7 +99,8 @@ module.exports = (sequelize, DataTypes) => {
   }, { hooks: {
     beforeCreate: (user) => {
       user.password = getSalt(user.password)
-      user.status = "Inactive"
+      user.status = "Active"
+      user.profilePic = "https://ik.imagekit.io/fjaskqdnu0xp/Ellipse_7_r2ng7EgQ1ru.png?ik-sdk-version=javascript-1.4.3&updatedAt=1642502319980"
     }
   },
     sequelize,

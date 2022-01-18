@@ -1,5 +1,5 @@
 const {Article, User, Comment, Category, SubCategory, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models')
-
+const { Op } = require("sequelize");
 class ArticleController {
     static async getBanner(req, res, next){
         try {
@@ -10,7 +10,7 @@ class ArticleController {
         }
     }
 
-    static async getFeaturedArticle(req, res, next){
+    static async getHomepageFeaturedArticle(req, res, next){
         try {
             const response = await FeaturedArticle.findAll({where: {status: 'Active', isHomepage: true}})
             res.status(200).json(response)
@@ -21,18 +21,54 @@ class ArticleController {
 
     static async getArticleHome(req, res, next){
         try {
-            const params = req.query.tag
-            const response = await Article.findAll({
-                include: [
-                    {model: User},{model: SubCategory}
-                ],
-                where: [{'tag': params},{'status': 'Active'}],
-                order: [
-                    ['publishedAt', 'DESC']
-                ],
-                limit: 20
-            })
-            res.status(200).json(response)
+            const tag = req.query.tag
+            const search = req.query.search
+            if(search){
+                const response = await Article.findAll({
+                    include: [
+                        {model: User}
+                    ],
+                    where: {
+                            'title': { [Op.iLike]: '%' + search + '%' }, 
+                            'status': 'Active'
+                        },
+                    order: [
+                        ['publishedAt', 'DESC']
+                    ],
+                    limit: 20
+                })
+                res.status(200).json(response)
+            }
+            if(tag){
+                const response = await Article.findAll({
+                    include: [
+                        {model: User},
+                        {model: FeaturedArticle,
+                        where: {'tag': tag}}
+                    ],
+                    where: [{'tag': tag},{'status': 'Active'}],
+                    order: [
+                        ['publishedAt', 'DESC']
+                    ],
+                    limit: 20
+                })
+                res.status(200).json(response)
+            }
+            else {
+                const response = await Article.findAll({
+                    include: [
+                        {model: User},
+                        {model: FeaturedArticle,
+                        where: {'isHomepage': true}}
+                    ],
+                    where: [{'status': 'Active'}],
+                    order: [
+                        ['publishedAt', 'DESC']
+                    ],
+                    limit: 20
+                })
+                res.status(200).json(response)
+            }
         } catch (err) {
             next(err)
         }
@@ -52,19 +88,11 @@ class ArticleController {
         }
     }
 
-    static async getCategoriesForForm(req, res, next){
-        try {
-            const response = Category.findAll({include: {model: SubCategory}})
-            res.status(200).json({response})
-        } catch (err) {
-            next(err)
-        }
-    }
-
     static async submitArticle(req, res, next){
         try {
-            const {attachment, img} = req.body
-            await SubmittedArticle.create({attachment, img})
+            const {title, attachment, img} = req.body
+            const {userId} = req.user.id
+            await SubmittedArticle.create({title, attachment, img, userId})
             res.status(201).json({msg: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
         } catch (err) {
             next(err)

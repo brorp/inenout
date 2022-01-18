@@ -1,6 +1,25 @@
 const {User} = require('../../models')
 
 class userController {
+    static async getUserInfo(req,res,next){
+      try {
+        const response = User.findByPk(req.user.id)
+        res.status(200).json(response)
+      } catch (err) {
+        next(err)
+      }
+    }
+
+    static async updateProfile(req, res, next){
+      try {
+        const {username, email, phoneNumber, fullName, profilePic} = req.body
+        User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
+        res.status(201).json({msg: 'Profil berhasil diubah'})
+      } catch (err) {
+        next(err)
+      }
+    }
+
     static async userChangePassword(req, res, next){
         try {
           const { id } = req.user.id;
@@ -42,16 +61,6 @@ class userController {
         } catch (err) {
             next(err)
         }
-    }
-
-    static async updateProfile(req, res, next){
-      try {
-        const {username, email, phoneNumber, fullName, profilePic} = req.body
-        const response = User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
-        res.status(201).json({msg: 'Profil berhasil diubah'})
-      } catch (err) {
-        next(err)
-      }
     }
 };
 

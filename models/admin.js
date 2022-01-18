@@ -58,11 +58,12 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
+    role: DataTypes.STRING,
     status: DataTypes.STRING
   }, { hooks: {
-    beforeCreate: (user) => {
-      user.password = getSalt(user.password)
-      user.status = "Inactive"
+    beforeCreate: (admin) => {
+      admin.password = getSalt(admin.password)
+      admin.status = "Active"
     }
   },
     sequelize,

@@ -14,10 +14,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   SubmittedArticle.init({
+    title: DataTypes.STRING,
     attachment: DataTypes.STRING,
     img: DataTypes.STRING,
-    userId: DataTypes.INTEGER
-  }, {
+    userId: DataTypes.INTEGER,
+    status: DataTypes.STRING
+  }, { hooks: {
+    beforeCreate: (submittedarticle) => {
+      submittedarticle.status = "On Review"
+    }
+  },
     sequelize,
     modelName: 'SubmittedArtcile',
   });

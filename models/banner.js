@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING,
   }, { hooks: {
     beforeCreate: (banner) => {
-      banner.status = "Inactive"
+      banner.status = "Active"
     }
   },
     sequelize,

@@ -3,9 +3,9 @@ const{User} = require('../models/index')
 
 let authentication = async (req, res, next) => {
     try {
-        let {access_token} = req.headers
-        let payload = verifyToken(access_token)
-        let response = await User.findOne({
+        const {access_token} = req.headers
+        const payload = verifyToken(access_token)
+        const response = await User.findOne({
             where: {email: payload.email}
         })
         if(!req.headers.access_token || !response){
@@ -14,7 +14,8 @@ let authentication = async (req, res, next) => {
         req.user = {
             id: response.id,
             email: response.email,
-            username: response.username
+            username: response.username,
+            fullName: response.fullName
         }
         next()
     } 

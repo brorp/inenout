@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Article.hasMany(models.Comment, { foreignKey: "articleId" })
       Article.hasOne(models.Banner, { foreignKey: "articleId" });
       Article.hasOne(models.FeaturedArticle, { foreignKey: "articleId" });
+      Article.hasMany(models.ArticleSection, { foreignKey: "articleId" });
     }
   };
   Article.init({
@@ -35,11 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING,
     publishedAt: DataTypes.STRING,
     userId: DataTypes.INTEGER
-  }, { hooks: {
-    beforeCreate: (article) => {
-      article.status = "Inactive"
-    }
-  },
+  }, { 
     sequelize,
     modelName: 'Article',
   });
