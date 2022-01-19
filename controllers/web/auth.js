@@ -8,7 +8,7 @@ class AuthController {
         try {
             const {email, password} = req.body
             let response = await User.findOne({
-                where: {email}
+                where: {email, status: 'Active'}
             })
             if(response && comparePassword(password, response.password)){
                 const access_token = signToken({
@@ -33,7 +33,7 @@ class AuthController {
         try {
             const {username, email, password, phoneNumber, fullName} = req.body
             const {role} = "User"
-            const {status} = "Active"
+            const {status} = "Inactive"
             const response = User.create({username, email, password, phoneNumber, fullName, role, status})
             const OTP = String(Math.floor(Math.random() * 999999));
             transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
@@ -48,9 +48,6 @@ class AuthController {
                     email: response.email,
                   });
                   await redis.set(`${response.id}`, OTP, 'ex', 120);
-                  if(req.body.otp !== OTP){
-                      throw{name: 'invalidotp'}
-                  }
                   res.status(201).json({
                     message: `OTP dikirim ke ${response.email}.`,
                     id: response.id,
@@ -64,6 +61,35 @@ class AuthController {
         } catch (err) {
             next(err)
         }
+    }
+
+    static async verifyUser(req, res, next) {
+      //ambil otp dan email dari redis
+      try {
+        const { otp } = req.body;
+        const redisOtp = await getRedis().get(`${req.params.id}`);
+        if (redisOtp !== otp) {
+          throw { name: 'invalidotp' };
+        }
+  
+        const { id } = req.params;
+        let date = new Date ().toISOString()
+        const {verified_at} = date.slice(0, 10)
+        const response = await User.update(
+          { verified_at,
+            status: 'Active' },
+          { where: { id } },
+        );
+        if (!response) {
+          throw { name: 'notauthenticated' };
+        }
+        res.status(200).json({
+          message:
+            'Registrasi Berhasil! Mohon login',
+        });
+      } catch (error) {
+        next(error);
+      }
     }
 
     static async forgotPassword(req, res, next){

@@ -16,7 +16,8 @@ class ArticleAdminController {
             
             const {userId} = user.id || isCreated.id
             const {title, caption, img} = req.body
-            const {publishedAt} = new Date()
+            let date = new Date ().toISOString()
+            const {publishedAt} = date.slice(0, 10)
             const newArticle = await Article.create({title, caption, img, userId, publishedAt})
             
             const {articleId} = newArticle.id

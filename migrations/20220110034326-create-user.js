@@ -34,6 +34,9 @@ module.exports = {
       status: {
         type: Sequelize.STRING
       },
+      verifiedAt: {
+        type: Sequelize.STRING
+      },
       isSubscribed: {
         type: Sequelize.BOOLEAN
       },
