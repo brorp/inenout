@@ -32,9 +32,9 @@ const errorHandler = async (err, req, res, next ) => {
   } else if (err.name === "invalidformat") {
     code = 400;
     msg = "Fomat file tidak valid, masukkan format PDF/PNG/JPEG";
-  } else if (err.name === "errorsendotp") {
+  } else if (err.name === "errorsendmail") {
     code = 401;
-    msg = "Terjadi kesalahan mengirim OTP, mohon coba beberapa saat lagi";
+    msg = "Terjadi kesalahan, mohon coba beberapa saat lagi";
   } else if (err.name === "invalidotp") {
     code = 401;
     msg = "Kode OTP salah";

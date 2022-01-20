@@ -1,6 +1,6 @@
 const {Category, SubCategory} = require('../../models')
 
-class CategoryAdminController {
+export class CMSCategoryController {
     static async getCategories (req, res, next){
         try {
             const response = await Category.findAll()
@@ -83,5 +83,3 @@ class CategoryAdminController {
         }
     }
 }
-
-module.exports = CategoryAdminController

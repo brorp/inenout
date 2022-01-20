@@ -30,8 +30,18 @@ const resetPasswordMail = (emailUser, resetLink) => {
   };
 };
 
+const publishedArticle = (emailUser, resetLink) => {
+  return {
+    from: EMAIL_FROM,
+    to: emailUser,
+    subject: '[IN-EN-OUT] Congratulations!',
+    html: ``,
+  };
+};
+
 module.exports = {
   resetPasswordMail,
   mailOtp,
+  publishedArticle,
   transporter,
 };

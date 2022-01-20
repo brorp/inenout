@@ -1,0 +1,15 @@
+export {AuthController} from './web/auth'
+export {UserController} from './web/user'
+export {ArticleController} from './web/articles'
+export {CommentController} from './web/comment'
+
+export {CMSAdminController} from './cms/admin'
+export {CMSArticleController} from './cms/articles'
+export {CMSAuthController} from './cms/auth'
+export {CMSBannerController} from './cms/banner'
+
+export {CMSCategoryController} from './cms/categories'
+export {CMSCommentController} from './cms/comment'
+export {CMSFeaturedArticleController} from './cms/featuredarticle'
+export {CMSInboxController} from './cms/inbox'
+export {CMSUserController} from './cms/user'

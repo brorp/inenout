@@ -3,7 +3,7 @@ const { signToken, signPasswordLink } = require('../../helpers/jwt')
 const {User} = require('../../models')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const redis = require('../config/redis')
-class AuthController {
+export class AuthController {
     static async userLogin (req,res,next){
         try {
             const {email, password} = req.body
@@ -33,14 +33,14 @@ class AuthController {
         try {
             const {username, email, password, phoneNumber, fullName} = req.body
             const {role} = "User"
-            const {status} = "Inactive"
+            const {status} = "Active"
             const response = User.create({username, email, password, phoneNumber, fullName, role, status})
             const OTP = String(Math.floor(Math.random() * 999999));
             transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
               try {
                 if(error){
                   throw {
-                    name: 'errorsendotp',
+                    name: 'errorsendmail',
                   };
                 } else{
                   const otpToken = jwtSign({
@@ -149,5 +149,3 @@ class AuthController {
       }
     }
 }
-
-module.exports = AuthController

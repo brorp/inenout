@@ -1,5 +1,5 @@
 const {Comment, User, Article} = require('../../models')
-class CommentController {
+export class CMSCommentController {
     static async getAllComment(req, res, next){
         try {
             const response = await Comment.findAll({include: {model: {User, Article}}})
@@ -29,5 +29,3 @@ class CommentController {
         }
     }
 }
-
-module.exports = CommentController

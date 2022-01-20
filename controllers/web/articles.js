@@ -1,6 +1,6 @@
 const {Article, User, Comment, Category, SubCategory, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models')
 const { Op } = require("sequelize");
-class ArticleController {
+export class ArticleController {
     static async getBanner(req, res, next){
         try {
             const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
@@ -23,6 +23,7 @@ class ArticleController {
         try {
             const tag = req.query.tag
             const search = req.query.search
+            const limits = req.query.limit
             if(search){
                 const response = await Article.findAll({
                     include: [
@@ -35,7 +36,7 @@ class ArticleController {
                     order: [
                         ['publishedAt', 'DESC']
                     ],
-                    limit: 20
+                    limit: limits
                 })
                 res.status(200).json(response)
             }
@@ -50,7 +51,7 @@ class ArticleController {
                     order: [
                         ['publishedAt', 'DESC']
                     ],
-                    limit: 20
+                    limit: limits
                 })
                 res.status(200).json(response)
             }
@@ -65,7 +66,7 @@ class ArticleController {
                     order: [
                         ['publishedAt', 'DESC']
                     ],
-                    limit: 20
+                    limit: limits
                 })
                 res.status(200).json(response)
             }
@@ -77,12 +78,19 @@ class ArticleController {
     static async getArticleDetail(req, res, next){
         try {
             const {articleId} = req.params
-            const response = await Article.findByPk(articleId,{
+            const articles = await Article.findByPk(articleId,{
                 include: [
-                    {model: User},{model: Comment},{model: CommentLike}
+                    {model: User}
                 ]
             })
-            res.status(200).json(response)
+            const comments = await Comment.findAll({
+                where: {articleId},
+                include: {model: CommentLike}
+            })
+            res.status(200).json({
+                articles: articles,
+                comments: comments
+            })
         } catch (err) {
             next(err)
         }
@@ -98,49 +106,4 @@ class ArticleController {
             next(err)
         }
     }
-    // static async getComment(req, res, next){
-    //     try {
-    //         const {articleId} = req.params
-    //         const comments = await Comment.findAll({
-    //             where: [{articleId}],
-    //             include: [{model: CommentLike, as: 'Likes'}],
-    //         })
-    //         // const [commentLikes] = await CommentLike.findAll({
-    //         //     where: {commentId: comments.id}
-    //         // })
-    //         res.status(200).json({
-    //             comments
-    //         })
-    //     } catch (err) {
-    //         next(err)
-    //     }
-    // }
-
-    static async postComment(req, res, next){
-        try {
-            const {commentText} = req.body
-            const userId = req.user.id
-            const {articleId} = req.params
-            const response = await Comment.create({commentText, userId, articleId})
-            res.status(201).json({
-                msg: 'Komen berhasil dibuat',
-                response
-            })
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    static async likeComment(req, res, next){
-        try {
-            const {commentId} = req.params
-            const userId = req.user.id
-            await CommentLike.create({commentId, userId})
-            res.status(201).json({msg: 'Komen berhasil di like'})
-        } catch (err) {
-            next(err)
-        }
-    }
 }
-
-module.exports = ArticleController

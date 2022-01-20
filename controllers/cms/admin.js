@@ -1,6 +1,6 @@
 const {Admin} = require('../../models')
 
-class AdminController {
+export class CMSAdminController {
     static async getActiveAdmin(req, res, next){
         try {
             const response = await Admin.findAll({where: {status: "Active"}})
@@ -33,5 +33,3 @@ class AdminController {
         }
     }
 }
-
-module.exports = AdminController

@@ -1,5 +1,5 @@
 const {Banner} = require('../../models')
-class BannerAdminController {
+export class CMSBannerController {
     static async getActiveBanner(req, res, next){
         try {
             const response = await Banner.findAll({where: {status: "Active"}})
@@ -38,5 +38,3 @@ class BannerAdminController {
         }
     }
 }
-
-module.exports = BannerAdminController

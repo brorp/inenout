@@ -1,6 +1,6 @@
 const {User} = require('../../models')
 
-class userController {
+export class UserController {
     static async getUserInfo(req,res,next){
       try {
         const response = User.findByPk(req.user.id)
@@ -63,5 +63,3 @@ class userController {
         }
     }
 };
-
-module.exports = userController

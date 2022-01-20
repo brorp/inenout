@@ -1,6 +1,19 @@
 const Redis = require("ioredis");
+
 const url = process.env.REDIS_URL;
 
-const redis = new Redis(url);
+let redis = null;
 
-module.exports = redis;
+async function connect() {
+  redis = new Redis();
+  return redis;
+}
+
+function getRedis() {
+  return redis;
+}
+
+module.exports = {
+  connect,
+  getRedis,
+};

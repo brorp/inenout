@@ -1,6 +1,6 @@
 const {User, SubmittedArticle} = require('../../models')
 const { Op } = require("sequelize");
-class InboxController {
+export class CMSInboxController {
     static async getIncomingArticle(req, res, next){
         try {
             let params
@@ -62,4 +62,3 @@ class InboxController {
     }
 }
 
-module.exports = InboxController

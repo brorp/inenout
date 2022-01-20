@@ -1,6 +1,6 @@
 const {FeaturedArticle} = require('../../models')
 
-class FeaturedArticleController {
+export class CMSFeaturedArticleController {
     static async getActiveFeaturedArticle(req, res, next){
         try {
             const response = await FeaturedArticle.findAll({where: {status: "Active"}})
@@ -48,5 +48,3 @@ class FeaturedArticleController {
         }
     }
 }
-
-module.exports = FeaturedArticleController

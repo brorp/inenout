@@ -1,5 +1,6 @@
 const {User, Article, ArticleSection} = require('../../models')
-class ArticleAdminController {
+const {transporter, publishedArticle} = require('../../helpers/nodemailer')
+export class CMSArticleController {
     static async addNewArticle(req, res, next){
         const t = await sequelize.transaction();
         try {
@@ -43,6 +44,26 @@ class ArticleAdminController {
             next(err)
         }
     }
-}
 
-module.exports = ArticleAdminController
+    static async publishArticle(req, res, next){
+        try {
+            const {articleId} = req.params
+            await Article.update({status: 'Active'},
+                {where: {articleId}
+            })
+            const response = Article.findOne({where: {articleId}, include: {model: User}})
+            transporter.sendMail(publishedArticle(), (error) => {
+                if(error){
+                    throw {
+                        name: 'errorsendmail',
+                    }; 
+                } else {
+                    console.log(`email sent to ${response.User.email}`)
+                    res.status(201).json('Artikel berhasil diunggah')
+                }   
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+}
