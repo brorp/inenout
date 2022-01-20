@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const key = proccess.env.JWT_KEY
+const key = process.env.JWT_KEY
 
 const signToken = (data) => {
     return jwt.sign(data, key, {expiresIn: '24h'})

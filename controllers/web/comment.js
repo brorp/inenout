@@ -1,4 +1,4 @@
-import {Comment, CommentLike} from '@models'
+import {Comment, CommentLike} from '../../models'
 export class CommentController {
     static async postComment(req, res, next){
         try {

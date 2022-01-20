@@ -1,4 +1,4 @@
-import {User, Comment, Article} from '@models'
+import {User, Comment, Article} from '../../models'
 const { Op } = require("sequelize");
 export class CMSUserController {
     static async getActiveUser(req, res, next){
@@ -42,7 +42,7 @@ export class CMSUserController {
         }
     }
     
-    static userInfo(req, res, next){
+    static async userInfo(req, res, next){
         try {
             const response = await User.findAll ({
                 include: [

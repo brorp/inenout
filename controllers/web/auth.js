@@ -113,7 +113,7 @@ export class AuthController {
           transporter.sendMail(resetPasswordMail(response.email, link), (err) => {
             if(err){
               throw {
-                name: 'errorsendotp',
+                name: 'errorsendmail',
               }
             } else{
               console.log(`email sent to ${response.email}`)

@@ -1,3 +1,4 @@
+require = require('esm')(module /*, options*/);
 if(process.env.NODE_ENV !== "production"){
     require('dotenv').config()
 }

@@ -1,5 +1,5 @@
 const express = require("express");
-const web_router = express.router();
+const web_router = express.Router();
 const {AuthController, 
     UserController, 
     ArticleController, 
@@ -12,7 +12,7 @@ web_router.post('/login', AuthController.userLogin)
 web_router.post('/register', AuthController.registerUser)
 web_router.post('/verification/:id/:token', AuthController.verifyUser)
 web_router.post('/forgot-password', AuthController.forgotPassword)
-web_router.post('/reset-password/:userId/:token', AuthController.resetPassword)
+web_router.post('/reset-password/:id/:token', AuthController.resetPassword)
 
 web_router.use(authentication)
 
@@ -22,7 +22,7 @@ web_router.get('/articles', ArticleController.getArticleHome)
 
 web_router.get('/articles/:articleId', ArticleController.getArticleDetail)
 web_router.post('/comments/:articleId', CommentController.postComment)
-web_router.patch('/like/:commentId', CommentController.likeComment)
+web_router.patch('/like/:id', CommentController.likeComment)
 
 web_router.post('/submit', uploadFile, imageKitMiddleware, ArticleController.submitArticle)
 
