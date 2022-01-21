@@ -10,11 +10,11 @@ const verifyToken = (token) => {
 }
 
 const signPasswordLink = (data, password) => {
-    return jwt.sign(data, (privateKey + password), {expiresIn: '15m'})
+    return jwt.sign(data, (key + password), {expiresIn: '5m'})
 }
 
 const verifyLink = (token, password) => {
-    return jwt.verify(token, (privateKey + password))
+    return jwt.verify(token, (key + password))
 }
 
 const decodeJwt = (token) => {

@@ -15,10 +15,18 @@ module.exports = {
         type: Sequelize.STRING
       },
       img: {
-        type: Sequelize.STRING
+        type: Sequelize.ARRAY(Sequelize.STRING)
       },
       userId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "Users",
+            key: 'id'
+          },
+          onUpdate: 'cascade',
+          onDelete: 'cascade'
+        }
       },
       status: {
         type: Sequelize.STRING

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   SubmittedArticle.init({
     title: DataTypes.STRING,
     attachment: DataTypes.STRING,
-    img: DataTypes.STRING,
+    img: DataTypes.ARRAY(DataTypes.STRING),
     userId: DataTypes.INTEGER,
     status: DataTypes.STRING
   }, { hooks: {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   },
     sequelize,
-    modelName: 'SubmittedArtcile',
+    modelName: 'SubmittedArticle',
   });
   return SubmittedArticle;
 };

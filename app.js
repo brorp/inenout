@@ -1,18 +1,25 @@
-require = require('esm')(module /*, options*/);
+// require = require("esm")(module/*, options*/)
 if(process.env.NODE_ENV !== "production"){
     require('dotenv').config()
 }
 const express = require('express')
 const app = express()
+const port = process.env.PORT || 3000;
 const route = require("./routes/index");
 const cors = require("cors")
 
 app.use([
     cors(),
     express.json(),
-    express.urlencoded({ extended: false })
+    express.urlencoded({ extended: true })
   ]);
   
 app.use(route)
 
-module.exports = app;
+const { connect } = require('./config/redis');
+
+connect().then(async () => {
+  app.listen(port, () => console.log(`Listen on http://localhost:${port}`));
+});
+
+// module.exports = app;

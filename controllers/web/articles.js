@@ -1,6 +1,6 @@
-const {Article, User, Comment, Category, SubCategory, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models')
+const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models/index')
 const { Op } = require("sequelize");
-export class ArticleController {
+class ArticleController {
     static async getBanner(req, res, next){
         try {
             const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
@@ -99,7 +99,7 @@ export class ArticleController {
     static async submitArticle(req, res, next){
         try {
             const {title, attachment, img} = req.body
-            const {userId} = req.user.id
+            const userId = req.user.id
             await SubmittedArticle.create({title, attachment, img, userId})
             res.status(201).json({msg: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
         } catch (err) {
@@ -107,3 +107,5 @@ export class ArticleController {
         }
     }
 }
+
+module.exports = ArticleController

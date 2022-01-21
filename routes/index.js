@@ -5,7 +5,7 @@ const cms_route = require('./cms')
 const errorHandler = require('../middlewares/errorHandler')
 
 route.use('/', web_route);
-route.use('/cms', cms_route)
+// route.use('/cms', cms_route)
 
 route.use(errorHandler)
 

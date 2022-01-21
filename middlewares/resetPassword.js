@@ -19,4 +19,4 @@ const resetPasswordMiddleware = async (req, res, next) => {
     }
 }
 
-module.exports = {resetPasswordMiddleware}
+module.exports = resetPasswordMiddleware

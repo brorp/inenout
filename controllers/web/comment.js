@@ -1,5 +1,6 @@
-import {Comment, CommentLike} from '../../models'
-export class CommentController {
+
+const {Comment, CommentLike} = require('../../models/index') 
+class CommentController {
     static async postComment(req, res, next){
         try {
             const {commentText} = req.body
@@ -26,3 +27,5 @@ export class CommentController {
         }
     }
 }
+
+module.exports = CommentController

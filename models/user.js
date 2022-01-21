@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       User.hasMany(models.Article, { foreignKey: "userId"})
       User.hasMany(models.Comment, { foreignKey: "userId" })
-      User.hasMany(models.SubmittedArticle, { foreignKey: "userId" })
+      User.hasMany(models.CommentLike, {foreignKey: 'userId'})
+      User.hasMany(models.SubmittedArticle, {foreignKey: 'userId'})
     }
   };
   User.init({
@@ -93,7 +94,6 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     profilePic: DataTypes.STRING,
-    role: DataTypes.STRING,
     status: DataTypes.STRING,
     verifiedAt: DataTypes.STRING,
     isSubscribed: DataTypes.BOOLEAN

@@ -15,20 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   CommentLike.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    commentId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
+    commentId: DataTypes.INTEGER,
+    userId:DataTypes.INTEGER
+  }, {
     sequelize,
     modelName: 'CommentLike',
   });

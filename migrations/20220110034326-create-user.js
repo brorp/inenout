@@ -28,9 +28,6 @@ module.exports = {
       profilePic: {
         type: Sequelize.STRING
       },
-      role: {
-        type: Sequelize.STRING
-      },
       status: {
         type: Sequelize.STRING
       },

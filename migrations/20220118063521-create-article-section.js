@@ -18,7 +18,15 @@ module.exports = {
         type: Sequelize.STRING
       },
       articleId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "Articles",
+            key: 'id'
+          },
+          onUpdate: 'cascade',
+          onDelete: 'cascade'
+        }
       },
       createdAt: {
         allowNull: false,

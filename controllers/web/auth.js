@@ -1,9 +1,10 @@
 const { comparePassword} = require('../../helpers/bcrypt')
 const { signToken, signPasswordLink } = require('../../helpers/jwt')
-const {User} = require('../../models')
+const { getSalt } = require('../../helpers/bcrypt')
+const {User} = require('../../models/index')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
-const redis = require('../config/redis')
-export class AuthController {
+const { getRedis } = require('../../config/redis')
+class AuthController {
     static async userLogin (req,res,next){
         try {
             const {email, password} = req.body
@@ -21,7 +22,7 @@ export class AuthController {
                 })
             }
             else{
-                throw('invalidlogin')
+                throw({name: 'invalidlogin'})
             }
         } 
         catch (err) {
@@ -32,9 +33,8 @@ export class AuthController {
     static async registerUser(req, res, next){
         try {
             const {username, email, password, phoneNumber, fullName} = req.body
-            const {role} = "User"
             const {status} = "Active"
-            const response = User.create({username, email, password, phoneNumber, fullName, role, status})
+            const response = await User.create({username, email, password, phoneNumber, fullName, status})
             const OTP = String(Math.floor(Math.random() * 999999));
             transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
               try {
@@ -43,11 +43,11 @@ export class AuthController {
                     name: 'errorsendmail',
                   };
                 } else{
-                  const otpToken = jwtSign({
+                  const otpToken = signToken({
                     id: response.id,
                     email: response.email,
                   });
-                  await redis.set(`${response.id}`, OTP, 'ex', 120);
+                  await getRedis().set(`${response.id}`, OTP, 'ex', 120);
                   res.status(201).json({
                     message: `OTP dikirim ke ${response.email}.`,
                     id: response.id,
@@ -74,9 +74,9 @@ export class AuthController {
   
         const { id } = req.params;
         let date = new Date ().toISOString()
-        const {verified_at} = date.slice(0, 10)
+        const verified_at = date.slice(0, 10)
         const response = await User.update(
-          { verified_at,
+          { verified_at: verified_at,
             status: 'Active' },
           { where: { id } },
         );
@@ -149,3 +149,5 @@ export class AuthController {
       }
     }
 }
+
+module.exports = AuthController

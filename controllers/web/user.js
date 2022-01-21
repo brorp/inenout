@@ -1,9 +1,9 @@
-const {User} = require('../../models')
+const {User} = require('../../models/index')
 
-export class UserController {
+class UserController {
     static async getUserInfo(req,res,next){
       try {
-        const response = User.findByPk(req.user.id)
+        const response = await User.findByPk(req.user.id)
         res.status(200).json(response)
       } catch (err) {
         next(err)
@@ -13,7 +13,7 @@ export class UserController {
     static async updateProfile(req, res, next){
       try {
         const {username, email, phoneNumber, fullName, profilePic} = req.body
-        User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
+        await User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
         res.status(201).json({msg: 'Profil berhasil diubah'})
       } catch (err) {
         next(err)
@@ -56,10 +56,12 @@ export class UserController {
     static async createSubscription(req, res, next){
         try {
             const {email} = req.body
-            User.update({isSubscribed: true},{where: {email}})
+            await User.update({isSubscribed: true},{where: {email}})
             res.status(201).json({msg: 'Terima kasih telah berlangganan newsletter dari InEnOut'})
         } catch (err) {
             next(err)
         }
     }
 };
+
+module.exports = UserController

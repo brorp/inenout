@@ -1,6 +1,6 @@
-import {User, Comment, Article} from '../../models'
+const {User, Comment, Article} = require('../../models') 
 const { Op } = require("sequelize");
-export class CMSUserController {
+class CMSUserController {
     static async getActiveUser(req, res, next){
         try {
             const response = await User.findAll({where: {status: "Active"}})

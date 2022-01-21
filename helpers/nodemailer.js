@@ -30,7 +30,7 @@ const resetPasswordMail = (emailUser, resetLink) => {
   };
 };
 
-const publishedArticle = (emailUser, resetLink) => {
+const publishedArticle = (emailUser) => {
   return {
     from: EMAIL_FROM,
     to: emailUser,
