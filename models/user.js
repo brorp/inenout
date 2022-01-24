@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       unique: {
         args: true,
-        msg: 'Email must be unique',
+        msg: 'Email sudah terdaftar',
       },
       validate: {
         notNull: {

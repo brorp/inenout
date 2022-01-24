@@ -4,6 +4,9 @@ class UserController {
     static async getUserInfo(req,res,next){
       try {
         const response = await User.findByPk(req.user.id)
+        if(!response){
+          throw {msg: "usernotfound"}
+        }
         res.status(200).json(response)
       } catch (err) {
         next(err)
@@ -14,7 +17,7 @@ class UserController {
       try {
         const {username, email, phoneNumber, fullName, profilePic} = req.body
         await User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
-        res.status(201).json({msg: 'Profil berhasil diubah'})
+        res.status(201).json({message: 'Profil berhasil diubah'})
       } catch (err) {
         next(err)
       }
@@ -27,7 +30,7 @@ class UserController {
           const response = await User.findOne({where: {id}})
           if(!req.body){
             throw {
-              name: 'passowrdnotfound'
+              name: 'passwordnotfound'
             }
           }
           if(comparePassword(oldPassword, response.password)){
@@ -41,7 +44,7 @@ class UserController {
               where: { id },
             });
             res.status(200).json({ 
-              message: 'Password changed.'
+              message: 'Password anda berhasil diubah'
             });
           } else {
             throw {
@@ -56,8 +59,11 @@ class UserController {
     static async createSubscription(req, res, next){
         try {
             const {email} = req.body
-            await User.update({isSubscribed: true},{where: {email}})
-            res.status(201).json({msg: 'Terima kasih telah berlangganan newsletter dari InEnOut'})
+            const response = await User.update({isSubscribed: true},{where: {email}})
+            if(!response){
+              throw {msg: 'usernotfound'}
+            }
+            res.status(201).json({message: 'Terima kasih telah berlangganan newsletter dari InEnOut'})
         } catch (err) {
             next(err)
         }

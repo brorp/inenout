@@ -8,7 +8,7 @@ class CommentController {
             const {articleId} = req.params
             const response = await Comment.create({commentText, userId, articleId})
             res.status(201).json({
-                msg: 'Komen berhasil dibuat',
+                message: 'Komen berhasil dibuat',
                 response
             })
         } catch (err) {
@@ -20,8 +20,18 @@ class CommentController {
         try {
             const {commentId} = req.params
             const userId = req.user.id
-            await CommentLike.create({commentId, userId})
-            res.status(201).json({msg: 'Komen berhasil disukai'})
+            const [like, isCreated] = await CommentLike.findOrCreate({ 
+                where: {
+                    commentId,
+                    userId: userId
+                },
+            })
+            if(!isCreated){
+                throw {name: `hasbeenliked`}
+            }
+            else{
+                res.status(201).json({message: 'Komen berhasil disukai'})
+            }
         } catch (err) {
             next(err)
         }

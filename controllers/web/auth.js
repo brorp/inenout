@@ -63,6 +63,33 @@ class AuthController {
         }
     }
 
+    static async resendOtp(req, res, next){
+      try {
+        const response = await User.findByPk(req.params.id)
+        await getRedis().del(`${response.id}`);
+        transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
+          try {
+            if(error){
+              throw {
+                name: 'errorsendmail',
+              };
+            } else{
+              await getRedis().set(`${response.id}`, OTP, 'ex', 120);
+              res.status(201).json({
+                message: `OTP dikirim ke ${response.email}.`,
+                id: response.id,
+                token: otpToken,
+              });
+            };
+          } catch (error) {
+            next(error);
+          };
+        });
+      } catch (err) {
+        next(err)
+      }
+    }
+
     static async verifyUser(req, res, next) {
       //ambil otp dan email dari redis
       try {
@@ -118,7 +145,7 @@ class AuthController {
             } else{
               console.log(`email sent to ${response.email}`)
               res.status(201).json({ 
-                message: 'A link has been sent to your email'
+                message: 'Link untuk mengubah password sudah dikirim melalui email anda'
               })
             }
           })

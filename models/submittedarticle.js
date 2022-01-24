@@ -14,9 +14,42 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   SubmittedArticle.init({
-    title: DataTypes.STRING,
-    attachment: DataTypes.STRING,
-    img: DataTypes.ARRAY(DataTypes.STRING),
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Judul harus diisi',
+        },
+        notEmpty: {
+          msg: 'Judul harus diisi',
+        },
+      },
+    },
+    attachment: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Mohon unggah file PDF berisi konten artikel anda',
+        },
+        notEmpty: {
+          msg: 'Mohon unggah file PDF berisi konten artikel anda',
+        },
+      },
+    },
+    img: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Mohon unggah minimal 1 gambar (.PNG/.JPEG)',
+        },
+        notEmpty: {
+          msg: 'Mohon unggah minimal 1 gambar (.PNG/.JPEG)',
+        },
+      },
+    },
     userId: DataTypes.INTEGER,
     status: DataTypes.STRING
   }, { hooks: {

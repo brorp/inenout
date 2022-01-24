@@ -1,9 +1,15 @@
-const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle} = require('../../models/index')
+const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, ArticleSection} = require('../../models/index')
 const { Op } = require("sequelize");
+const {getRedis} = require ('../../config/redis')
 class ArticleController {
     static async getBanner(req, res, next){
         try {
+            let chace = await getRedis().get("banner");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            }
             const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
+            await getRedis().set("banner", JSON.stringify(response));
             res.status(200).json(response)
         } catch (error) {
             next(error)
@@ -12,7 +18,21 @@ class ArticleController {
 
     static async getHomepageFeaturedArticle(req, res, next){
         try {
-            const response = await FeaturedArticle.findAll({where: {status: 'Active', isHomepage: true}})
+            const tag = req.query.tag
+            let params
+            if(tag){
+                params = {where: {status: 'Active'},
+                        include: {model: User, where: {tag: tag}}}
+            } else {
+                params = {where: {status: 'Active', isHomepage: true}}
+            }
+
+            let chace = await getRedis().get("featuredarticles");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            }
+            const response = await FeaturedArticle.findAll(params)
+            await getRedis().set("featuredarticles", JSON.stringify(response));
             res.status(200).json(response)
         } catch (error) {
             next(error)
@@ -21,55 +41,36 @@ class ArticleController {
 
     static async getArticleHome(req, res, next){
         try {
-            const tag = req.query.tag
-            const search = req.query.search
-            const limits = req.query.limit
-            if(search){
+            let chace = await getRedis().get("articles");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            } else {
+                const tag = req.query.tag
+                const search = req.query.search
+                let params
+                if(search){
+                    params = {
+                        'title': { [Op.iLike]: '%' + search + '%' }, 
+                        'status': 'Active'
+                    }
+                }
+                if(tag){
+                    params = [{'tag': tag},{'status': 'Active'}]
+                }
+
                 const response = await Article.findAll({
                     include: [
-                        {model: User}
+                        {model: User,
+                        attributes:['fullName', 'profilePic']}
                     ],
-                    where: {
-                            'title': { [Op.iLike]: '%' + search + '%' }, 
-                            'status': 'Active'
-                        },
+                    where: params,
                     order: [
                         ['publishedAt', 'DESC']
                     ],
-                    limit: limits
                 })
+                await getRedis().set("articles", JSON.stringify(response));
                 res.status(200).json(response)
-            }
-            if(tag){
-                const response = await Article.findAll({
-                    include: [
-                        {model: User},
-                        {model: FeaturedArticle,
-                        where: {'tag': tag}}
-                    ],
-                    where: [{'tag': tag},{'status': 'Active'}],
-                    order: [
-                        ['publishedAt', 'DESC']
-                    ],
-                    limit: limits
-                })
-                res.status(200).json(response)
-            }
-            else {
-                const response = await Article.findAll({
-                    include: [
-                        {model: User},
-                        {model: FeaturedArticle,
-                        where: {'isHomepage': true}}
-                    ],
-                    where: [{'status': 'Active'}],
-                    order: [
-                        ['publishedAt', 'DESC']
-                    ],
-                    limit: limits
-                })
-                res.status(200).json(response)
-            }
+            }     
         } catch (err) {
             next(err)
         }
@@ -80,17 +81,37 @@ class ArticleController {
             const {articleId} = req.params
             const articles = await Article.findByPk(articleId,{
                 include: [
-                    {model: User}
+                    {model: User,
+                    attributes:['fullName', 'profilePic']},
+                    {model: ArticleSection}
                 ]
             })
             const comments = await Comment.findAll({
                 where: {articleId},
-                include: {model: CommentLike}
+                include: {model: CommentLike,
+                    attributes:['userId']}
             })
             res.status(200).json({
                 articles: articles,
-                comments: comments
+                comments: comments,
             })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getMoreLikeThis(req, res, next){
+        try {
+            const response = await Article.findAll({ 
+            where: {
+                id: {
+                  [Op.not]: req.params.articleId
+                }
+              }, 
+            order: [['publishedAt', 'DESC']],
+            limit: 3,
+            })
+            res.status(200).json(response)
         } catch (err) {
             next(err)
         }
@@ -101,7 +122,7 @@ class ArticleController {
             const {title, attachment, img} = req.body
             const userId = req.user.id
             await SubmittedArticle.create({title, attachment, img, userId})
-            res.status(201).json({msg: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
+            res.status(201).json({message: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
         } catch (err) {
             next(err)
         }

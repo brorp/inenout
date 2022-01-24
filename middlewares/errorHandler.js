@@ -10,7 +10,7 @@ const errorHandler = async (err, req, res, next ) => {
     msg = err.errors[0].message;
   } else if (err.name === "notauthenticated") {
     code = 401;
-    msg = "Login first";
+    msg = "Tidak dapat mengakses";
   } else if (err.name === "JsonWebTokenError" || err.name === "invalid_token") {
     code = 401;
     msg = "Invalid token";
@@ -27,9 +27,12 @@ const errorHandler = async (err, req, res, next ) => {
     code = 400;
     msg = "Password harus diisi";
   } else if (err.name === "mailnotfound") {
-    code = 401;
+    code = 400;
     msg = "Email tidak boleh kosong";
-  } else if (err.name === "invalidformat") {
+  } else if (err.name === "usernotfound") {
+    code = 404;
+    msg = "Tidak dapat mendapatkan info user";
+  }else if (err.name === "invalidformat") {
     code = 400;
     msg = "Fomat file tidak valid, masukkan format PDF/PNG/JPEG";
   } else if (err.name === "errorsendmail") {
@@ -38,6 +41,9 @@ const errorHandler = async (err, req, res, next ) => {
   } else if (err.name === "invalidotp") {
     code = 401;
     msg = "Kode OTP salah";
+  } else if (err.name === "hasbeenliked") {
+    code = 400;
+    msg = "Komen sudah disukai";
   } 
 
   res.status(code).json({
