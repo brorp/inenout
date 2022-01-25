@@ -20,7 +20,6 @@ let axiosInstance = axios.create({
 
 const singleFileUpload = async (req, res, next) => {
     try {
-        console.log(req.file)
         if(!req.file){
             throw {name:`notfound`}
         }
@@ -47,11 +46,10 @@ const singleFileUpload = async (req, res, next) => {
   const multipleFileUpload = async (req, res, next) => {
     try {
         let folderName = req.body.title.replace(" ", "_");
-        let att
-        form.append('attachment', req.files.attachment[0].buffer.toString('base64'))
-
+        // form.append('file', req.files.attachment[0].buffer.toString('base64'))
+        // form.append('fileName', req.files.attachment[0].originalname)
         console.log(req.body)
-        if(req.body.attachment){
+        // if(req.body.attachment){
           imagekit.upload({
             file: req.files.attachment[0].buffer.toString('base64'),
             fileName: req.files.attachment[0].originalname,
@@ -64,11 +62,10 @@ const singleFileUpload = async (req, res, next) => {
                 req.body.attachment = result.url
               }
             });
-        }
+        // }
 
 
-        if(req.body.img){
-          let images = []
+        // if(req.body.img){
           req.files.img.forEach(el => {
             form.append('img', el.buffer.toString('base64'))
             imagekit.upload({
@@ -79,13 +76,12 @@ const singleFileUpload = async (req, res, next) => {
                 if(error){
                   console.log(error)
                 } else {
-                  req.body.img.push(result)
                   console.log(result)
                 }
               });
           })
-          req.body.img = images
-        }
+          // req.body.img = images
+        // }
         next()
         } 
     catch (err) {

@@ -5,10 +5,11 @@ const UserController = require('../controllers/web/user')
 const ArticleController = require('../controllers/web/articles')
 const CommentController = require('../controllers/web/comment')
 const authentication = require('../middlewares/authentication')
+const CMSUserController = require('../controllers/cms/user')
 const {submitArticleUpload, uploadProfilePic} = require('../middlewares/multer')
 const { singleFileUpload, multipleFileUpload } = require('../middlewares/imageKit')
 const resetPasswordMiddleware = require('../middlewares/resetPassword')
-const verifyMiddleware = require('../middlewares/verification')
+const verifyMiddleware = require('../middlewares/verification');
 
 web_router.post('/login', AuthController.userLogin)
 web_router.post('/register', AuthController.registerUser)

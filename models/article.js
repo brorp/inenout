@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     tag: DataTypes.INTEGER,
     content: DataTypes.TEXT,
     img: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(1000),
       allowNull: false,
       validate: {
         notNull: {

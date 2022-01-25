@@ -1,19 +1,59 @@
 const {Admin} = require('../../models')
+const { getPagination, getPagingData } = require("../../helpers/pagination");
+const { Op } = require("sequelize");
 
-export class CMSAdminController {
-    static async getActiveAdmin(req, res, next){
+class CMSAdminController {
+    static async getAdminList(req, res, next){
         try {
-            const response = await Admin.findAll({where: {status: "Active"}})
-            res.status(200).json(response)
-        } catch (err) {
-            next(err)
-        }
-    }
+            let { page, size, search, filter } = req.query;
+            let params;
+            if (+page < 1) page = 1;
+            if (+size < 1) size = 8;
+            const { limit, offset } = getPagination(page, size);
+            if (search) {
+              params = {
+                [Op.or]: [
+                  { 'fullName': { [Op.iLike]: '%' + search + '%' } },
+                  { 'email': { [Op.iLike]: '%' + search + '%' } }
+                ]
+              }
+            }
+            if(filter){
+                params = {
+                    'status': params
+                }
+            }
+            if(!search || !filter){
+                const active = await Admin.findAndCountAll({
+                    where: {status: "Active"},
+                    order: [["fullName", "ASC"]],
+                    attributes: {exclude: ["password"]},
+                    limit,
+                    offset,
+                })
+                const inactive = await Admin.findAndCountAll({
+                    where: {status: "Active"},
+                    order: [["fullName", "ASC"]],
+                    attributes: {exclude: ["password"]},
+                    limit,
+                    offset,
+                })
+                const response = {
+                    active: active,
+                    inactive: inactive
+                }
+                res.status(200).json(getPagingData(response, page, limit))
+            }
+            
+            const response = await Admin.findAndCountAll({
+                where: params,
+                order: [["fullName", "ASC"]],
+                attributes: {exclude: ["password"]},
+                limit,
+                offset,
+            })
+            res.status(200).json(getPagingData(response, page, limit))
 
-    static async getInactiveAdmin(req, res, next){
-        try {
-            const response = await Admin.findAll({where: {status: "Inactive"}})
-            res.status(200).json(response)
         } catch (err) {
             next(err)
         }
@@ -33,3 +73,5 @@ export class CMSAdminController {
         }
     }
 }
+
+module.exports = CMSAdminController

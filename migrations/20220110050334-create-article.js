@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.TEXT
       },
       img: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING(1000)
       },
       status: {
         type: Sequelize.STRING
