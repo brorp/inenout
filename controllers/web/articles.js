@@ -120,6 +120,7 @@ class ArticleController {
     static async submitArticle(req, res, next){
         try {
             const {title, attachment, img} = req.body
+            console.log(req.body)
             const userId = req.user.id
             await SubmittedArticle.create({title, attachment, img, userId})
             res.status(201).json({message: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})

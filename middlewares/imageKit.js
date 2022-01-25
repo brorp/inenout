@@ -37,7 +37,6 @@ const singleFileUpload = async (req, res, next) => {
           },
         })
         req.body.profilePic = response.data.url
-        req.body.attachment = response.data.url
         next()
         } 
     catch (err) {
@@ -47,13 +46,12 @@ const singleFileUpload = async (req, res, next) => {
 
   const multipleFileUpload = async (req, res, next) => {
     try {
-        if(!req.files){
-          throw {name:`notfound`}
-        } 
-        console.log(JSON.parse(JSON.stringify(req.body)))
         let folderName = req.body.title.replace(" ", "_");
         let att
+        form.append('attachment', req.files.attachment[0].buffer.toString('base64'))
 
+        console.log(req.body)
+        if(req.body.attachment){
           imagekit.upload({
             file: req.files.attachment[0].buffer.toString('base64'),
             fileName: req.files.attachment[0].originalname,
@@ -66,13 +64,13 @@ const singleFileUpload = async (req, res, next) => {
                 req.body.attachment = result.url
               }
             });
-        // }
+        }
+
 
         if(req.body.img){
           let images = []
           req.files.img.forEach(el => {
-            // let fileImg = form.append('file', el.buffer.toString('base64'))
-            // let fileNameImg = form.append('fileName', el.originalname)
+            form.append('img', el.buffer.toString('base64'))
             imagekit.upload({
               file: el.buffer.toString('base64'),
               fileName: el.originalname,

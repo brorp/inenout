@@ -5,7 +5,7 @@ const UserController = require('../controllers/web/user')
 const ArticleController = require('../controllers/web/articles')
 const CommentController = require('../controllers/web/comment')
 const authentication = require('../middlewares/authentication')
-const {submitArticleUpload, uploadProfilePic, uploadPDF} = require('../middlewares/multer')
+const {submitArticleUpload, uploadProfilePic} = require('../middlewares/multer')
 const { singleFileUpload, multipleFileUpload } = require('../middlewares/imageKit')
 const resetPasswordMiddleware = require('../middlewares/resetPassword')
 const verifyMiddleware = require('../middlewares/verification')
@@ -30,7 +30,7 @@ web_router.post('/like/:commentId', CommentController.likeComment)
 
 web_router.post('/submit', 
     submitArticleUpload, 
-    multipleFileUpload,  
+    multipleFileUpload,
     ArticleController.submitArticle)
 
 web_router.get('/profile', UserController.getUserInfo)

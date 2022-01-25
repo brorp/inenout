@@ -11,7 +11,7 @@ const errorHandler = async (err, req, res, next ) => {
   } else if (err.name === "notauthenticated") {
     code = 401;
     msg = "Tidak dapat mengakses";
-  } else if (err.name === "JsonWebTokenError" || err.name === "invalid_token") {
+  } else if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError" || err.name === "invalidtoken") {
     code = 401;
     msg = "Invalid token";
   } else if (err.name === "invalidlogin") {
