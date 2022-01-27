@@ -5,7 +5,6 @@ const { getSalt } = require("../helpers/bcrypt");
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const data = [{
-      username: "spiderman88",
       email: "inenout.dummy@gmail.com",
       password: getSalt("asdasd"),
       fullName: 'Peter Parker',
