@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       FeaturedArticle.belongsTo(models.Article, { foreignKey: "articleId" });    }
   };
   FeaturedArticle.init({
+    title: DataTypes.STRING,
     caption: DataTypes.STRING,
     articleId: DataTypes.INTEGER,
     img: DataTypes.STRING,
