@@ -1,4 +1,4 @@
-const {Comment, User, Article} = require('../../models')
+const {Comment, CommentLike, User, Article} = require('../../models')
 export class CMSCommentController {
     static async getAllComment(req, res, next){
         try {
@@ -12,7 +12,10 @@ export class CMSCommentController {
     static async getCommentByArticle(req, res, next){
         try {
             const {articleId} = req.params
-            const response = await Comment.findAll({where: {articleId}})
+            const response = await Comment.findAll({
+                where: {articleId},
+                include: {model: CommentLike}
+            })
             res.status(200).json(response)
         } catch (err) {
             next(err)

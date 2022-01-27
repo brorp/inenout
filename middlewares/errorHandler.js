@@ -31,8 +31,11 @@ const errorHandler = async (err, req, res, next ) => {
     msg = "Email tidak boleh kosong";
   } else if (err.name === "usernotfound") {
     code = 404;
-    msg = "Tidak dapat mendapatkan info user";
-  }else if (err.name === "invalidformat") {
+    msg = "Tidak dapat mendapatkan info user tersebut";
+  } else if (err.name === "articlenotfound") {
+    code = 404;
+    msg = "Tidak dapat mendapatkan info artikel tersebut";
+  } else if (err.name === "invalidformat") {
     code = 400;
     msg = "Fomat file tidak valid, masukkan format PDF/PNG/JPEG";
   } else if (err.name === "errorsendmail") {

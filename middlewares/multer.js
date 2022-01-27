@@ -6,6 +6,14 @@ const submitArticleUpload = upload.fields([
   {name: 'attachment', maxCount: 10}, 
   {name: 'img', maxCount: 10}
 ])
-const uploadProfilePic = upload.single('profilePic')
 
-module.exports = {submitArticleUpload, uploadProfilePic}
+const createArticleUpload = upload.fields([
+  {name: 'img', maxCount: 1}, 
+  {name: 'sectionImg', maxCount: 1}
+])
+
+const uploadProfilePic = upload.single('profilePic')
+const uploadBanner = upload.single('imgBanner')
+const uploadFeaturedArticle = upload.single('img')
+
+module.exports = {submitArticleUpload, uploadProfilePic, createArticleUpload}

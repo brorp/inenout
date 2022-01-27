@@ -30,7 +30,7 @@ const resetPasswordMail = (emailUser, resetLink) => {
   };
 };
 
-const publishedArticle = (emailUser) => {
+const articlePublish = (emailUser) => {
   return {
     from: EMAIL_FROM,
     to: emailUser,
@@ -42,6 +42,6 @@ const publishedArticle = (emailUser) => {
 module.exports = {
   resetPasswordMail,
   mailOtp,
-  publishedArticle,
+  articlePublish,
   transporter,
 };

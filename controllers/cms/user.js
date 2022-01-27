@@ -60,7 +60,7 @@ class CMSUserController {
                 }
                 if(filter){
                     params = {
-                        'status': params
+                        'status': filter
                     }
                 }
                 const response = await User.findAll({

@@ -1,5 +1,6 @@
-const {FeaturedArticle} = require('../../models')
-
+const {FeaturedArticle, Article} = require('../../models')
+const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("../../helpers/pagination");
 export class CMSFeaturedArticleController {
     static async getActiveFeaturedArticle(req, res, next){
         try {
