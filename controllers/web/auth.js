@@ -4,6 +4,7 @@ const { getSalt } = require('../../helpers/bcrypt')
 const {User} = require('../../models/index')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const { getRedis } = require('../../config/redis')
+const { makeCode } = require('../../helpers/uniqueCode')
 class AuthController {
     static async userLogin (req,res,next){
         try {
@@ -35,10 +36,11 @@ class AuthController {
             const {username, email, password, phoneNumber, fullName} = req.body
             const {status} = "Active"
             const response = await User.create({username, email, password, phoneNumber, fullName, status})
-            const OTP = String(Math.floor(Math.random() * 999999));
+            const OTP = makeCode(6);
             transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
               try {
                 if(error){
+                  await User.destroy({where: {id: response.id}})
                   throw {
                     name: 'errorsendmail',
                   };
@@ -67,6 +69,7 @@ class AuthController {
       try {
         const response = await User.findByPk(req.params.id)
         await getRedis().del(`${response.id}`);
+        const OTP = makeCode(6)
         transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
           try {
             if(error){
