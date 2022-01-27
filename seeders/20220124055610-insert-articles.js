@@ -13,7 +13,7 @@ module.exports = {
         tag: Math.floor(Math.random() * (22 - 1 + 1)) + 1,
         userId: 1,
         content: el.content,
-        img: el.urlToImage,
+        img: "https://ik.imagekit.io/fjaskqdnu0xp/image_21__1__w4ybLjp7iEO.png?ik-sdk-version=javascript-1.4.3&updatedAt=1643296033734",
         status: 'Active',
         publishedAt: el.publishedAt.slice(0, 10),
         createdAt: new Date(),
@@ -22,7 +22,7 @@ module.exports = {
     })
     const news2 = await axios({
       method: 'GET',
-      url: 'https://newsapi.org/v2/everything?domains=techcrunch.com&apiKey=7026d13236394963856a190be5b09e5c'
+      url: 'https://newsapi.org/v2/everything?q=tesla&apiKey=7026d13236394963856a190be5b09e5c'
     })
     news2.data.articles.forEach(el => {
       data.push({
@@ -30,7 +30,7 @@ module.exports = {
         tag: Math.floor(Math.random() * (22 - 1 + 1)) + 1,
         userId: 1,
         content: el.content,
-        img: el.urlToImage,
+        img: "https://ik.imagekit.io/fjaskqdnu0xp/image_21__1__w4ybLjp7iEO.png?ik-sdk-version=javascript-1.4.3&updatedAt=1643296033734",
         status: 'Active',
         publishedAt: el.publishedAt.slice(0, 10),
         createdAt: new Date(),
@@ -39,7 +39,7 @@ module.exports = {
     })
     const news3 = await axios({
       method: 'GET',
-      url: 'https://newsapi.org/v2/everything?sources=techcrunch&apiKey=7026d13236394963856a190be5b09e5c'
+      url: 'https://newsapi.org/v2/top-headlines?country=us&apiKey=7026d13236394963856a190be5b09e5c'
     })
     news3.data.articles.forEach(el => {
       data.push({
@@ -47,7 +47,7 @@ module.exports = {
         tag: Math.floor(Math.random() * (22 - 1 + 1)) + 1,
         userId: 1,
         content: el.content,
-        img: el.urlToImage,
+        img: "https://ik.imagekit.io/fjaskqdnu0xp/image_21__1__w4ybLjp7iEO.png?ik-sdk-version=javascript-1.4.3&updatedAt=1643296033734",
         status: 'Active',
         publishedAt: el.publishedAt.slice(0, 10),
         createdAt: new Date(),
