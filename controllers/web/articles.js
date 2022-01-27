@@ -7,10 +7,12 @@ class ArticleController {
             let chace = await getRedis().get("banner");
             if (chace) {
                 res.status(200).json(JSON.parse(chace));
+            } else {
+                const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
+                await getRedis().set("banner", JSON.stringify(response));
+                res.status(200).json(response)
             }
-            const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
-            await getRedis().set("banner", JSON.stringify(response));
-            res.status(200).json(response)
+
         } catch (error) {
             next(error)
         }
@@ -18,22 +20,23 @@ class ArticleController {
 
     static async getHomepageFeaturedArticle(req, res, next){
         try {
-            const tag = req.query.tag
-            let params
-            if(tag){
-                params = {where: {status: 'Active'},
-                        include: {model: User, where: {tag: tag}}}
-            } else {
-                params = {where: {status: 'Active', isHomepage: true}}
-            }
-
             let chace = await getRedis().get("featuredarticles");
             if (chace) {
                 res.status(200).json(JSON.parse(chace));
+            } else {
+                const tag = req.query.tag
+                let params
+                if(tag){
+                    params = {where: {status: 'Active'},
+                            include: {model: User, where: {tag: tag}}}
+                } else {
+                    params = {where: {status: 'Active', isHomepage: true}}
+                }
+    
+                const response = await FeaturedArticle.findAll(params)
+                await getRedis().set("featuredarticles", JSON.stringify(response));
+                res.status(200).json(response)
             }
-            const response = await FeaturedArticle.findAll(params)
-            await getRedis().set("featuredarticles", JSON.stringify(response));
-            res.status(200).json(response)
         } catch (error) {
             next(error)
         }
@@ -45,32 +48,31 @@ class ArticleController {
             if (chace) {
                 res.status(200).json(JSON.parse(chace));
             } else {
-                const tag = req.query.tag
-                const search = req.query.search
-                let params
-                if(search){
-                    params = {
-                        'title': { [Op.iLike]: '%' + search + '%' }, 
-                        'status': 'Active'
-                    }
+            const tag = req.query.tag
+            const search = req.query.search
+            let params
+            if(search){
+                params = {
+                    'title': { [Op.iLike]: '%' + search + '%' }, 
+                    'status': 'Active'
                 }
-                if(tag){
-                    params = [{'tag': tag},{'status': 'Active'}]
-                }
-
-                const response = await Article.findAll({
-                    include: [
-                        {model: User,
-                        attributes:['fullName', 'profilePic']}
-                    ],
-                    where: params,
-                    order: [
-                        ['publishedAt', 'DESC']
-                    ],
-                })
-                await getRedis().set("articles", JSON.stringify(response));
-                res.status(200).json(response)
-            }     
+            }
+            if(tag){
+                params = [{'tag': tag},{'status': 'Active'}]
+            }
+            const response = await Article.findAll({
+                include: [
+                    {model: User,
+                    attributes:['fullName', 'profilePic']}
+                ],
+                where: params,
+                order: [
+                    ['publishedAt', 'DESC']
+                ],
+            })
+            await getRedis().set("articles", JSON.stringify(response));
+            res.status(200).json(response)
+            }
         } catch (err) {
             next(err)
         }
