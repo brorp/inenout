@@ -17,6 +17,7 @@ Peduli Lindungi is an application to manage your .... This app has :
 3. `GET /articles`
 4. `GET /articles/:articleId`
 5. `GET /more-articles/:articleId`
+6. `GET /ads`
 
 
 ### comments (need token headers)
@@ -557,6 +558,42 @@ not needed
     "status": "String",
     "publishedAt": "String",
     "userId": "Integer",
+}
+```
+
+&nbsp;
+
+### GET /ads
+> Get more article di bawah section comment
+
+**Request Headers**
+```json
+not needed
+```
+
+**Request Params**
+```
+not needed
+```
+
+**Request Body**
+```
+not needed
+```
+
+**Request Query**
+```
+not needed
+```
+
+**Response (200 - Ok)**
+```json
+{
+    "id": "Integer",
+    "title": "String",
+    "url": "Integer",
+    "imgAds": "String",
+    "status": "String",
 }
 ```
 
