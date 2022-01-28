@@ -1,4 +1,4 @@
-const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, Ads} = require('../../models/index')
+const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, Ads, ArticleSection} = require('../../models/index')
 const { Op } = require("sequelize");
 const {getRedis} = require ('../../config/redis');
 class ArticleController {
