@@ -1,17 +1,17 @@
-const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, ArticleSection} = require('../../models/index')
+const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, Ads} = require('../../models/index')
 const { Op } = require("sequelize");
-const {getRedis} = require ('../../config/redis')
+const {getRedis} = require ('../../config/redis');
 class ArticleController {
     static async getBanner(req, res, next){
         try {
-            // let chace = await getRedis().get("banner");
-            // if (chace) {
-            //     res.status(200).json(JSON.parse(chace));
-            // } else {
+            let chace = await getRedis().get("banner");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            } else {
                 const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
-                // await getRedis().set("banner", JSON.stringify(response));
+                await getRedis().set("banner", JSON.stringify(response));
                 res.status(200).json(response)
-            // }
+            }
 
         } catch (error) {
             next(error)
@@ -20,10 +20,10 @@ class ArticleController {
 
     static async getHomepageFeaturedArticle(req, res, next){
         try {
-            // let chace = await getRedis().get("featuredarticles");
-            // if (chace) {
-            //     res.status(200).json(JSON.parse(chace));
-            // } else {
+            let chace = await getRedis().get("featuredarticles");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            } else {
                 const tag = req.query.tag
                 let params
                 if(tag){
@@ -34,9 +34,9 @@ class ArticleController {
                 }
     
                 const response = await FeaturedArticle.findAll(params)
-                // await getRedis().set("featuredarticles", JSON.stringify(response));
+                await getRedis().set("featuredarticles", JSON.stringify(response));
                 res.status(200).json(response)
-            // }
+            }
         } catch (error) {
             next(error)
         }
@@ -44,10 +44,10 @@ class ArticleController {
 
     static async getArticleHome(req, res, next){
         try {
-            // let chace = await getRedis().get("articles");
-            // if (chace) {
-            //     res.status(200).json(JSON.parse(chace));
-            // } else {
+            let chace = await getRedis().get("articles");
+            if (chace) {
+                res.status(200).json(JSON.parse(chace));
+            } else {
             const tag = req.query.tag
             const search = req.query.search
             let params
@@ -70,9 +70,9 @@ class ArticleController {
                     ['publishedAt', 'DESC']
                 ],
             })
-            // await getRedis().set("articles", JSON.stringify(response));
+            await getRedis().set("articles", JSON.stringify(response));
             res.status(200).json(response)
-            // }
+            }
         } catch (err) {
             next(err)
         }
@@ -126,6 +126,15 @@ class ArticleController {
             const userId = req.user.id
             await SubmittedArticle.create({title, attachment, img, userId})
             res.status(201).json({message: 'Artikel berhasil diunggah dan akan di review oleh kami, mohon cek email untuk status artikel'})
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getAdsHome(req, res, next){
+        try {
+            const response = await Ads.findAll({where: {status: 'Active'}})
+            res.status(200).json(response)
         } catch (err) {
             next(err)
         }

@@ -55,6 +55,9 @@ export class CMSBannerController {
         try {
             const {imgBanner, title} = req.body
             const {id} = req.params
+            if(!article){
+                throw {name: 'articlenotfound'}
+            }
             const article = await Article.findOne({where: {[Op.iLike]: '%' + title + '%'}})
             const response = await Banner.update({title: article.title, imgBanner, articleId: article.id},{where: {id}})
             res.status(201).json(response)

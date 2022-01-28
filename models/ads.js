@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   Ads.init({
     title: DataTypes.STRING,
     url: DataTypes.STRING(1000),
-    imgAds: DataTypes.STRING
+    imgAds: DataTypes.STRING,
+    status: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Ads',

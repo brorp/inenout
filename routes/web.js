@@ -22,6 +22,7 @@ web_router.get('/featured-articles', ArticleController.getHomepageFeaturedArticl
 web_router.get('/articles', ArticleController.getArticleHome)
 web_router.get('/articles/:articleId', ArticleController.getArticleDetail)
 web_router.get('/more-articles/:articleId', ArticleController.getMoreLikeThis)
+web_router.get('/ads', ArticleController.getAdsHome)
 
 web_router.use(authentication)
 
