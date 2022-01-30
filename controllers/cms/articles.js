@@ -11,7 +11,8 @@ class CMSArticleController {
             const { limit, offset } = getPagination(page, size);
             const active = await Article.findAndCountAll({
                 where: {status: "Active"},
-                order: ["verifiedAt", "DESC"],
+                include: {model: User, attributes: {exclude: ['password']}},
+                order: ["publishedAt", "DESC"],
                 limit,
                 offset,
             })
@@ -31,7 +32,8 @@ class CMSArticleController {
             const { limit, offset } = getPagination(page, size);
             const inactive = await Article.findAndCountAll({
                 where: {status: "Inactive"},
-                order: ["verifiedAt", "DESC"],
+                include: {model: User, attributes: {exclude: ['password']}},
+                order: ["publishedAt", "DESC"],
                 limit,
                 offset,
             })
@@ -63,7 +65,7 @@ class CMSArticleController {
                 }
                 const response = await User.findAll({
                     where: params,
-                    include: {model: User},
+                    include: {model: User, attributes: {exclude: ['password']}},
                     order: ["publishedAt", "DESC"]
                 })
                 res.status(200).json(response)
@@ -82,7 +84,7 @@ class CMSArticleController {
             const response = await Article.findByPk(id, {
                 include: [
                     {model: ArticleSection},
-                    {model: User}
+                    {model: User, attributes: {exclude: ['password']}},
                 ]
             })
             res.status(200).json(response)

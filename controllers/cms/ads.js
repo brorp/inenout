@@ -25,6 +25,48 @@ class CMSAdsController {
             next(err)
         }
     }
+
+    static async createAds(req, res, next){
+        try {
+            const {title, url, imgAds} = req.body
+            const response = await Banner.create({title, url, imgAds})
+            res.status(201).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getAdsById(req, res, next){
+        try {
+            const {id} = req.params
+            const response = await Ads.findByPk(id)
+            res.status(200).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async editAds(req, res, next){
+        try {
+            const {title, url, imgAds} = req.body
+            const {id} = req.params
+            const response = await Ads.update({title, url, imgAds},{where: {id}})
+            res.status(201).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async statusAds(req, res, next){
+        try {
+            const {id} = req.params
+            const {status} = req.query
+            await Ads.update({status},{where: {id}})
+            res.status(200).json({msg: 'Ads berhasil di aktivasi'})
+        } catch (err) {
+            next(err)
+        }
+    }
 }
 
 module.exports = CMSAdsController

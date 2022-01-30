@@ -11,7 +11,7 @@ export class CMSFeaturedArticleController {
             let params
             if(search){
                 params = {
-                    where: {'caption': {[Op.iLike]: '%' + search + '%'}}
+                    where: {'title': {[Op.iLike]: '%' + search + '%'}}
                 }
             } else params = {}
 
@@ -54,10 +54,10 @@ export class CMSFeaturedArticleController {
         try {
             const {title, caption, img} = req.body
             const {id} = req.params
+            const article = await Article.findOne({where: {[Op.iLike]: '%' + title + '%'}})
             if(!article){
                 throw {name: 'articlenotfound'}
             }
-            const article = await Article.findOne({where: {[Op.iLike]: '%' + title + '%'}})
             const response = await FeaturedArticle.update({title: article.title, caption, img, articleId: article.id},{where: {id}})
             res.status(201).json(response)
         } catch (err) {

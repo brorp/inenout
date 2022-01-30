@@ -1,9 +1,31 @@
 const {Comment, CommentLike, User, Article} = require('../../models')
+const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("../../helpers/pagination");
 export class CMSCommentController {
-    static async getAllComment(req, res, next){
+    static async getCommentList(req, res, next){
         try {
-            const response = await Comment.findAll({include: {model: {User, Article}}})
-            res.status(200).json(response)
+            const {page, size, search} = req.query;
+            if (+page < 1) page = 1;
+            if (+size < 1) size = 5;
+            const { limit, offset } = getPagination(page, size);
+            const {search, filter} = req.query;
+            let params
+            if(search){
+                params = {
+                    'commentText': {[Op.iLike]: '%' + search + '%'}
+                }
+            } if(filter){
+                params = {
+                    'status': filter
+                }
+            } else params = {}
+
+            const response = await Comment.findAndCountAll({
+                where: params,
+                limit,
+                offset
+            })
+            res.status(200).json(getPagingData(response, page, limit))
         } catch (err) {
             next(err)
         }

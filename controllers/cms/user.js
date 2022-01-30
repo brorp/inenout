@@ -11,7 +11,7 @@ class CMSUserController {
             const { limit, offset } = getPagination(page, size);
             const active = await User.findAndCountAll({
                 where: {status: "Active"},
-                order: [["fullName", "ASC"]],
+                order: [["verifiedAt", "DESC"]],
                 attributes: {exclude: ["password"]},
                 limit,
                 offset,
@@ -32,7 +32,7 @@ class CMSUserController {
             const { limit, offset } = getPagination(page, size);
             const inactive = await User.findAndCountAll({
                 where: {status: "Inactive"},
-                order: [["fullName", "ASC"]],
+                order: [["verifiedAt", "DESC"]],
                 attributes: {exclude: ["password"]},
                 limit,
                 offset,

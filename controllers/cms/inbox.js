@@ -1,23 +1,31 @@
 const {User, SubmittedArticle} = require('../../models')
 const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("../../helpers/pagination");
 export class CMSInboxController {
-    static async getIncomingArticle(req, res, next){
+    static async getIncomingArticleList(req, res, next){
         try {
+            const {page, size, search} = req.query;
+            if (+page < 1) page = 1;
+            if (+size < 1) size = 5;
+            const { limit, offset } = getPagination(page, size);
+            const {search, filter} = req.query;
             let params
-            if(req.query.title){
-                params = {'title': { [Op.iLike]: '%' + req.query.title + '%' }}
-            }
-            if(req.query.status){
-                params = {'status': req.query.status}
-            } else {
-                params = {}
-            }
-            const response = await SubmittedArticle.findAll({
+            if(search){
+                params = {
+                    'commentText': {[Op.iLike]: '%' + search + '%'}
+                }
+            } if(filter){
+                params = {
+                    'status': filter
+                }
+            } else params = {}
+
+            const response = await SubmittedArticle.findAndCountAll({
                 where: params,
-                include: {model: User},
-                order: ['createdAt','DESC']
+                limit,
+                offset
             })
-            res.status(200).json(response)
+            res.status(200).json(getPagingData(response, page, limit))
         } catch (err) {
             next(err)
         }
@@ -49,16 +57,26 @@ export class CMSInboxController {
     }
 
     static async getSubscribedUser(req, res, next){
-        try {
-            const response = await User.findAll({
-                where: {isSubscribed: true}
-            },{
-                order: ["updatedAt","DESC"]
-            })
-            res.status(200).json(response)
-        } catch (err) {
-            next(err)
-        }
+        const {page, size, search} = req.query;
+        if (+page < 1) page = 1;
+        if (+size < 1) size = 5;
+        const { limit, offset } = getPagination(page, size);
+        const {search} = req.query;
+        let params = { isSubscribed: true }
+        if(search){
+            params = {
+                'commentText': {[Op.iLike]: '%' + search + '%'}
+            }, { isSubscribed: true }
+        } else params = {}
+
+        const response = await User.findAndCountAll({
+            where: params,
+            limit,
+            offset
+        })
+        res.status(200).json(getPagingData(response, page, limit))
+    } catch (err) {
+        next(err)
     }
 }
 
