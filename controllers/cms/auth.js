@@ -1,6 +1,6 @@
 const {Admin} = require('../../models')
 
-export class CMSAuthController{
+class CMSAuthController{
     static async loginAdmin (req, res, next) {
         try {
             const {email, password} = req.body
@@ -24,3 +24,5 @@ export class CMSAuthController{
         }
     }
 }
+
+module.exports = CMSAuthController
