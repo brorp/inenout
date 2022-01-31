@@ -1,6 +1,6 @@
 const express = require("express");
 const CMSAuthController = require("../controllers/cms/auth");
-const { CMSBannerController } = require("../controllers/cms/banner");
+const CMSBannerController = require("../controllers/cms/banner");
 const cms_router = express.Router();
 const authentication = require('../middlewares/authentication')
 
