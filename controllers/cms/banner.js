@@ -2,7 +2,7 @@ const {Banner, Article} = require('../../models')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 
-export class CMSBannerController {
+class CMSBannerController {
     static async getBannerList(req, res, next){
         try {
             const {page, size, search} = req.query;
@@ -77,3 +77,5 @@ export class CMSBannerController {
         }
     }
 }
+
+module.exports = CMSBannerController
