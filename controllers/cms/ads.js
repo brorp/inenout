@@ -13,7 +13,7 @@ class CMSAdsController {
                 params = {
                     where: {'caption': {[Op.iLike]: '%' + search + '%'}}
                 }
-            } else params = {}
+            } 
 
             const response = await Ads.findAndCountAll({
                 where: params,
@@ -62,7 +62,7 @@ class CMSAdsController {
             const {id} = req.params
             const {status} = req.query
             await Ads.update({status},{where: {id}})
-            res.status(200).json({msg: 'Ads berhasil di aktivasi'})
+            res.status(200).json({msg: 'status Ads berhasil diubah'})
         } catch (err) {
             next(err)
         }

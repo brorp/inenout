@@ -23,7 +23,7 @@ const singleFileUpload = async (req, res, next) => {
         if(!req.file){
             throw {name:`notfound`}
         }
-        if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg'&& req.file.mimetype !== 'application/pdf') {
+        if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
             throw { name: 'invalidformatfile' };
         }
 
@@ -36,6 +36,9 @@ const singleFileUpload = async (req, res, next) => {
           },
         })
         req.body.profilePic = response.data.url
+        req.body.img = response.data.url
+        req.body.imgBanner = response.data.url
+        req.body.imgAds = response.data.url
         next()
         } 
     catch (err) {

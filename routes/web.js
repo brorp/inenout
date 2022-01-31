@@ -9,6 +9,7 @@ const {submitArticleUpload, uploadProfilePic} = require('../middlewares/multer')
 const { singleFileUpload, multipleFileUpload } = require('../middlewares/imageKit')
 const resetPasswordMiddleware = require('../middlewares/resetPassword')
 const verifyMiddleware = require('../middlewares/verification');
+const errorHandler = require('../middlewares/errorHandler')
 
 web_router.post('/login', AuthController.userLogin)
 web_router.post('/register', AuthController.registerUser)
@@ -42,5 +43,7 @@ web_router.post('/profile',
 
 web_router.patch('/change-password', UserController.userChangePassword)
 web_router.patch('/subscribe', UserController.createSubscription)
+
+web_router.use(errorHandler)
 
 module.exports = web_router

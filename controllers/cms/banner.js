@@ -9,15 +9,16 @@ class CMSBannerController {
             if (+page < 1) page = 1;
             if (+size < 1) size = 5;
             const { limit, offset } = getPagination(page, size);
-            let params
+            let params;
             if(search){
                 params = {
-                    where: {'title': {[Op.iLike]: '%' + search + '%'}}
+                    'title': {[Op.iLike]: '%' + search + '%'}
                 }
-            } else params = {}
+            }
 
             const response = await Banner.findAndCountAll({
                 where: params,
+                order: [["createdAt", "DESC"]],
                 limit,
                 offset
             })
@@ -71,7 +72,7 @@ class CMSBannerController {
             const {id} = req.params
             const {status} = req.query
             await Banner.update({status},{where: {id}})
-            res.status(200).json({msg: 'Banner berhasil di aktivasi'})
+            res.status(200).json({msg: 'Status Banner berhasil diubah'})
         } catch (err) {
             next(err)
         }

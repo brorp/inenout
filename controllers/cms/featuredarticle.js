@@ -1,7 +1,7 @@
 const {FeaturedArticle, Article} = require('../../models')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
-export class CMSFeaturedArticleController {
+class CMSFeaturedArticleController {
     static async getFeaturedList(req, res, next){
         try {
             const {page, size, search} = req.query;
@@ -11,12 +11,13 @@ export class CMSFeaturedArticleController {
             let params
             if(search){
                 params = {
-                    where: {'title': {[Op.iLike]: '%' + search + '%'}}
+                    'title': {[Op.iLike]: '%' + search + '%'}
                 }
-            } else params = {}
+            }
 
             const response = await FeaturedArticle.findAndCountAll({
                 where: params,
+                order: [["createdAt", "DESC"]],
                 limit,
                 offset
             })
@@ -86,3 +87,5 @@ export class CMSFeaturedArticleController {
         }
     }
 }
+
+module.exports = CMSFeaturedArticleController

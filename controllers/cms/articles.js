@@ -1,93 +1,73 @@
-const {User, Article, ArticleSection} = require('../../models')
+const {User, Article, ArticleSection, SubCategory} = require('../../models')
 const {transporter, articlePublish} = require('../../helpers/nodemailer')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 class CMSArticleController {
-    static async articleActive(req, res, next){
+    static async getArticleList(req, res, next){
         try {
-            let { page, size } = req.query;
+            let { page, size, search, filter } = req.query;
+            const { limit, offset } = getPagination(page, size);
             if (+page < 1) page = 1;
             if (+size < 1) size = 5;
-            const { limit, offset } = getPagination(page, size);
-            const active = await Article.findAndCountAll({
-                where: {status: "Active"},
-                include: {model: User, attributes: {exclude: ['password']}},
-                order: ["publishedAt", "DESC"],
+            let params;
+            if (search) {
+                params = {
+                [Op.and]: [
+                    { 'title': { [Op.iLike]: '%' + search + '%' } },
+                    { 'content': { [Op.iLike]: '%' + search + '%' } }
+                ]
+                }
+            }
+            if(filter){
+                params = {
+                    'status': filter
+                }
+            }
+    
+            const response = await Article.findAndCountAll({
+                where: params,
+                include: {model: User, attributes: ['fullName', 'email']},
+                order: [["publishedAt", "DESC"]],
                 limit,
                 offset,
             })
             res.status(200).json(
-                getPagingData(active, page, limit)
+                getPagingData(response, page, limit)
             )
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    static async articleInactive(req, res, next){
-        try {
-            let { page, size } = req.query;
-            if (+page < 1) page = 1;
-            if (+size < 1) size = 5;
-            const { limit, offset } = getPagination(page, size);
-            const inactive = await Article.findAndCountAll({
-                where: {status: "Inactive"},
-                include: {model: User, attributes: {exclude: ['password']}},
-                order: ["publishedAt", "DESC"],
-                limit,
-                offset,
-            })
-            res.status(200).json(
-                getPagingData(inactive, page, limit)
-            )
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    static async articleQueries(req, res, next){
-        try {
-            const {search, filter} = req.query;
-            if(search || filter){
-                let params;
-                if (search) {
-                  params = {
-                    [Op.or]: [
-                      { 'title': { [Op.iLike]: '%' + search + '%' } },
-                      { 'content': { [Op.iLike]: '%' + search + '%' } }
-                    ]
-                  }
-                }
-                if(filter){
-                    params = {
-                        'status': filter
-                    }
-                }
-                const response = await User.findAll({
-                    where: params,
-                    include: {model: User, attributes: {exclude: ['password']}},
-                    order: ["publishedAt", "DESC"]
-                })
-                res.status(200).json(response)
-            }
-            else {
-                res.status(200).json(null)
-            }
-        } catch (err) {
+        } catch(err){
             next(err)
         }
     }
     
-    static async articleInfoDetail(req, res, next){
+    static async getArticleInfoDetail(req, res, next){
         try {
             const {id} = req.params
             const response = await Article.findByPk(id, {
                 include: [
                     {model: ArticleSection},
-                    {model: User, attributes: {exclude: ['password']}},
+                    {model: User, attributes:['fullName', 'profilePic']}
                 ]
             })
             res.status(200).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async getArticleByUser(req, res, next){
+        try {
+            let { page, size } = req.query;
+            const { limit, offset } = getPagination(page, size);
+            if (+page < 1) page = 1;
+            if (+size < 1) size = 5;
+            const {userId} = req.params
+            const response = await Article.findAndCountAll({
+                where: {userId},
+                include: {model: SubCategory},
+                offset,
+                limit
+            })
+            res.status(200).json(response, page, limit)
         } catch (err) {
             next(err)
         }
@@ -105,8 +85,9 @@ class CMSArticleController {
                     password: newPassword,
                     fullName: fullName,
                 }
-            })
-            const userId = user.id || isCreated.id
+            }, { transaction: t })
+            let userId = user.id ? user.id : isCreated.id
+            let emailUser = user.email ? user.email : isCreated.email
             let date = new Date ().toISOString()
             const {publishedAt} = date.slice(0, 10)
             const {status} = "Inactive"
@@ -117,7 +98,7 @@ class CMSArticleController {
                 userId: userId, 
                 publishedAt,
                 status
-            })
+            }, { transaction: t })
             
             const {articleId} = newArticle.id
             const {sectionTitle, sectionText, sectionImg} = req.body
@@ -125,10 +106,28 @@ class CMSArticleController {
             req.body.map(el => {
                 payload.push(el)
             })
-            const newSection = await ArticleSection.bulkCreate({sectionTitle, sectionText, sectionImg, articleId})
-            
+            const newSection = await ArticleSection.bulkCreate({
+                sectionTitle, 
+                sectionText, 
+                sectionImg, 
+                articleId
+            }, { transaction: t })
+            const {url} = req.body
+            const previewLink = `https:/${url}/articles/${newArticle.id}`
+            const subscribeLink = `https:/${url}`
+            t.afterCommit(async () => {
+            transporter.sendMail(articlePublish(userEmail, previewLink, subscribeLink), (error) => {
+                if(error){
+                    throw {
+                        name: 'errorsendmail',
+                    }; 
+                } else {
+                        console.log(`email sent to ${userEmail}`)
+                        res.status(201).json({user: user, newArticle: newArticle, newSection: newSection});
+                    }   
+                })
+            })
             await t.commit();
-            res.status(201).json({user: user, newArticle: newArticle, newSection: newSection});
         } catch (err) {
             await t.rollback();
             next(err);
@@ -147,29 +146,24 @@ class CMSArticleController {
         }
     }
 
-    static async publishArticle(req, res, next){
+    static async editArticle(req, res, next){
         try {
-            const {articleId} = req.params
-            const article = await Article.findOne({where: {articleId}, include: {model: User}})
-            await Article.update({status: 'Active'},
-                {where: {articleId}
-            })
-            transporter.sendMail(articlePublish(article.User.email), (error) => {
-                if(error){
-                    throw {
-                        name: 'errorsendmail',
-                    }; 
-                } else {
-                    console.log(`email sent to ${article.User.email}`)
-                    res.status(201).json('Artikel berhasil diunggah')
-                }   
-            })
+            
+        } catch (err) {
+            
+        }
+    }
+
+    static async statusArticle(req, res, next){
+        try {
+            const {id} = req.params
+            const {status} = req.query
+            await Article.update({status},{where: {id}})
+            res.status(200).json({msg: 'Status Artikel berhasil diubah'})
         } catch (err) {
             next(err)
         }
     }
-
-    static async editArticle()
 }
 
 module.exports = CMSArticleController

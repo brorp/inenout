@@ -26,16 +26,16 @@ const resetPasswordMail = (emailUser, resetLink) => {
     from: EMAIL_FROM,
     to: emailUser,
     subject: '[IN-EN-OUT] Request reset account password',
-    html: `This is your one-time link to reset your password.<br/> <a href="${resetLink}">${resetLink}</a> <br/> Click link to reset password.`,
+    html: `This is your one-time link to reset your password.<br/> <a href="${resetLink}">reset password</a> <br/> Click link to reset password.`,
   };
 };
 
-const articlePublish = (emailUser) => {
+const articlePublish = (emailUser, linkPreview, subscribeLink) => {
   return {
     from: EMAIL_FROM,
     to: emailUser,
     subject: '[IN-EN-OUT] Congratulations!',
-    html: ``,
+    html: `Your article has been published to INENOUT! <br/> here's the <a href="${linkPreview}">preview</a><br/>Thank you for being part of INENOUT, please subscribe to our newsletter <a href="${subsribeLink}">here</a>`
   };
 };
 

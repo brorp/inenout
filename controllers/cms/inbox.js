@@ -1,14 +1,13 @@
 const {User, SubmittedArticle} = require('../../models')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
-export class CMSInboxController {
+class CMSInboxController {
     static async getIncomingArticleList(req, res, next){
         try {
-            const {page, size, search} = req.query;
+            const {page, size, search, filter} = req.query;
             if (+page < 1) page = 1;
             if (+size < 1) size = 5;
             const { limit, offset } = getPagination(page, size);
-            const {search, filter} = req.query;
             let params
             if(search){
                 params = {
@@ -61,14 +60,12 @@ export class CMSInboxController {
         if (+page < 1) page = 1;
         if (+size < 1) size = 5;
         const { limit, offset } = getPagination(page, size);
-        const {search} = req.query;
         let params = { isSubscribed: true }
         if(search){
             params = {
-                'commentText': {[Op.iLike]: '%' + search + '%'}
+                'email': {[Op.iLike]: '%' + search + '%'}
             }, { isSubscribed: true }
-        } else params = {}
-
+        }
         const response = await User.findAndCountAll({
             where: params,
             limit,
@@ -80,3 +77,4 @@ export class CMSInboxController {
     }
 }
 
+module.exports = CMSInboxController

@@ -15,5 +15,6 @@ const createArticleUpload = upload.fields([
 const uploadProfilePic = upload.single('profilePic')
 const uploadBanner = upload.single('imgBanner')
 const uploadFeaturedArticle = upload.single('img')
+const uploadAds = upload.single('imgAds')
 
-module.exports = {submitArticleUpload, uploadProfilePic, createArticleUpload}
+module.exports = {submitArticleUpload, uploadProfilePic, createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds}

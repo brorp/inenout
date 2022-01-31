@@ -2,6 +2,7 @@ const {Admin} = require('../../models')
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 const { Op } = require("sequelize");
 
+
 class CMSAdminController {
     static async getAdminList(req, res, next){
         try {
@@ -23,28 +24,6 @@ class CMSAdminController {
                     'status': params
                 }
             }
-            if(!search || !filter){
-                const active = await Admin.findAndCountAll({
-                    where: {status: "Active"},
-                    order: [["fullName", "ASC"]],
-                    attributes: {exclude: ["password"]},
-                    limit,
-                    offset,
-                })
-                const inactive = await Admin.findAndCountAll({
-                    where: {status: "Active"},
-                    order: [["fullName", "ASC"]],
-                    attributes: {exclude: ["password"]},
-                    limit,
-                    offset,
-                })
-                const response = {
-                    active: active,
-                    inactive: inactive
-                }
-                res.status(200).json(getPagingData(response, page, limit))
-            }
-            
             const response = await Admin.findAndCountAll({
                 where: params,
                 order: [["fullName", "ASC"]],
@@ -52,8 +31,9 @@ class CMSAdminController {
                 limit,
                 offset,
             })
-            res.status(200).json(getPagingData(response, page, limit))
-
+            res.status(200).json(
+                getPagingData(response, page, limit)
+            )
         } catch (err) {
             next(err)
         }
@@ -68,6 +48,17 @@ class CMSAdminController {
             }
             const response = await Admin.create({username, email, password, fullName, role})
             res.status(201).json({msg: `Admin ${response.email} berhasil didaftarkan`})
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async statusAdmin(req, res, next){
+        try {
+            const {id} = req.params
+            const {status} = req.query
+            await Admin.update({status},{where: {id}})
+            res.status(200).json({msg: 'Status Admin berhasil diubah'})
         } catch (err) {
             next(err)
         }

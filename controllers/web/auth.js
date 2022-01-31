@@ -1,4 +1,4 @@
-const { comparePassword} = require('../../helpers/bcrypt')
+const { comparePassword } = require('../../helpers/bcrypt')
 const { signToken, signPasswordLink } = require('../../helpers/jwt')
 const { getSalt } = require('../../helpers/bcrypt')
 const {User} = require('../../models/index')
@@ -138,7 +138,7 @@ class AuthController {
               password: response.password,
           };
           const token = signPasswordLink(payload, response.password);
-          let link = `http://${url}/${response.id}/${token}`
+          let link = `https://${url}/${response.id}/${token}`
         //   send this by email
           transporter.sendMail(resetPasswordMail(response.email, link), (err) => {
             if(err){

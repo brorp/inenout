@@ -1,5 +1,6 @@
 const {Admin} = require('../../models')
-
+const { comparePassword } = require('../../helpers/bcrypt')
+const { signToken } = require('../../helpers/jwt')
 class CMSAuthController{
     static async loginAdmin (req, res, next) {
         try {

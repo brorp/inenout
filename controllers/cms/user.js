@@ -3,82 +3,42 @@ const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 
 class CMSUserController {
-    static async userActive(req, res, next){
+    static async getUserList(req, res, next){
         try {
-            let { page, size } = req.query;
+            let { page, size, search, filter } = req.query;
             if (+page < 1) page = 1;
             if (+size < 1) size = 5;
             const { limit, offset } = getPagination(page, size);
-            const active = await User.findAndCountAll({
-                where: {status: "Active"},
+            let params;
+            if (search) {
+                params = {
+                  [Op.or]: [
+                    { 'fullName': { [Op.iLike]: '%' + search + '%' } },
+                    { 'email': { [Op.iLike]: '%' + search + '%' } }
+                  ]
+                }
+              }
+            if(filter){
+                params = {
+                    'status': filter
+                }
+            }
+            const response = await User.findAndCountAll({
+                where: params,
                 order: [["verifiedAt", "DESC"]],
                 attributes: {exclude: ["password"]},
                 limit,
                 offset,
             })
             res.status(200).json(
-                getPagingData(active, page, limit)
+                getPagingData(response, page, limit)
             )
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    static async userInactive(req, res, next){
-        try {
-            let { page, size } = req.query;
-            if (+page < 1) page = 1;
-            if (+size < 1) size = 5;
-            const { limit, offset } = getPagination(page, size);
-            const inactive = await User.findAndCountAll({
-                where: {status: "Inactive"},
-                order: [["verifiedAt", "DESC"]],
-                attributes: {exclude: ["password"]},
-                limit,
-                offset,
-            })
-            res.status(200).json(
-                getPagingData(inactive, page, limit)
-            )
-        } catch (err) {
-            next(err)
-        }
-    }
-
-    static async userQueries(req, res, next){
-        try {
-            const {search, filter} = req.query;
-            if(search || filter){
-                let params;
-                if (search) {
-                  params = {
-                    [Op.or]: [
-                      { 'fullName': { [Op.iLike]: '%' + search + '%' } },
-                      { 'email': { [Op.iLike]: '%' + search + '%' } }
-                    ]
-                  }
-                }
-                if(filter){
-                    params = {
-                        'status': filter
-                    }
-                }
-                const response = await User.findAll({
-                    where: params,
-                    order: [["fullName", "ASC"]],
-                    attributes: {exclude: ["password"]}
-                })
-                res.status(200).json(response)
-            }
-            else {
-                res.status(200).json(null)
-            }
         } catch (err) {
             next(err)
         }
     }
     
-    static async userInfoDetail(req, res, next){
+    static async getUserInfoDetail(req, res, next){
         try {
             const {id} = req.params
             const response = await User.findByPk(id, {
@@ -89,6 +49,17 @@ class CMSUserController {
                 ]
             })
             res.status(200).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    static async statusUser(req, res, next){
+        try {
+            const {id} = req.params
+            const {status} = req.query
+            await User.update({status},{where: {id}})
+            res.status(200).json({msg: 'Status User berhasil diubah'})
         } catch (err) {
             next(err)
         }

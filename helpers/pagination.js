@@ -7,11 +7,11 @@ const getPagination = (page, size) => {
   };
   
   const getPagingData = (data, page, limit) => {
-    const { count: totalItems, rows: users } = data;
+    const { count: totalItems, rows: response } = data;
     const currentPage = page ? +page : 1;
     const totalPages = Math.ceil(totalItems / limit);
   
-    return { totalItems, users, totalPages, currentPage };
+    return { totalItems, response, totalPages, currentPage };
   };
   
   module.exports = { getPagination, getPagingData };
