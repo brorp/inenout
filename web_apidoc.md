@@ -52,7 +52,6 @@ not needed
 
 ```json
 {
-  "username": "String", //required
   "email": "String", //required 
   "password": "String", //required
   "phoneNumber": "String", //required
@@ -441,6 +440,7 @@ not needed
     "title": "String",
     "tag": "Integer",
     "content": "Text",
+    "imgThumbnail": "String",
     "img": "String",
     "status": "String",
     "publishedAt": "String",
@@ -487,6 +487,7 @@ not needed
         "title": "String",
         "tag": "Integer",
         "content": "Text",
+        "imgThumbnail": "String",
         "img": "String",
         "status": "String",
         "publishedAt": "String",
@@ -554,6 +555,7 @@ not needed
     "title": "String",
     "tag": "Integer",
     "content": "Text",
+    "imgThumbnail": "String",
     "img": "String",
     "status": "String",
     "publishedAt": "String",
@@ -756,7 +758,6 @@ not needed
 ```json
 {
     "id": "integer",
-    "username": "String",
     "email": "String",
     "password": "String",
     "phoneNumber": "String",
@@ -794,7 +795,6 @@ not needed
 **Request Body**
 ```json
 {
-    "username": "String",
     "email": "String",
     "password": "String",
     "phoneNumber": "String",
