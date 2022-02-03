@@ -28,7 +28,7 @@ class CMSBannerController {
         }
     }
 
-    static async createBannerByArticle(req, res, next){
+    static async createBanner(req, res, next){
         try {
             const {imgBanner, title} = req.body
             const article = await Article.findOne({where: {title: {[Op.iLike]: '%' + title + '%'}}})
