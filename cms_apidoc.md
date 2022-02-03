@@ -137,7 +137,7 @@ not needed
 **Response (200 - OK)**
 ```json
 {
-  "message": "Registrasi Berhasil! Mohon login"
+  "response": ""
 }
 ```
 

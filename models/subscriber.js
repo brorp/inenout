@@ -14,7 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Subscriber.init({
-    email: DataTypes.STRING,
+    email: {
+    type: DataTypes.STRING,
     allowNull: false,
     unique: {
       args: true,
@@ -25,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         msg: 'Format email tidak valid',
       },
     },
+  },
   }, {
     sequelize,
     modelName: 'Subscriber',
