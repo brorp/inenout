@@ -157,7 +157,7 @@ class CMSArticleController {
     static async statusArticle(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
+            const {status} = req.body
             await Article.update({status},{where: {id}})
             res.status(200).json({msg: 'Status Artikel berhasil diubah'})
         } catch (err) {

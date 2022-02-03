@@ -12,25 +12,25 @@ const CMSAdminController = require('../controllers/cms/admin')
 const {createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds} = require('../middlewares/multer')
 const {singleFileUpload, multipleFileUpload} = require('../middlewares/imageKit')
 const cms_router = express.Router();
-const authentication = require('../middlewares/authentication');
+const {authenticationAdmin} = require('../middlewares/authentication');
 const errorHandler = require('../middlewares/errorHandler')
 cms_router.post('/login', CMSAuthController.loginAdmin)
 
-// cms_router.use(authentication)
+cms_router.use(authenticationAdmin)
 
 //banners
 cms_router.get('/banners', CMSBannerController.getBannerList)
 cms_router.post('/banners', uploadBanner, singleFileUpload, CMSBannerController.createBanner)
 cms_router.get('/banners/:id', CMSBannerController.getBannerById)
 cms_router.post('/banners/:id', uploadBanner, singleFileUpload, CMSBannerController.editBanner)
-cms_router.patch('/banners/status', CMSBannerController.statusBanner)
+cms_router.patch('/banners/status/:id', CMSBannerController.statusBanner)
 
 //featured articles
 cms_router.get('/featured-articles', CMSFeaturedArticleController.getFeaturedList)
 cms_router.post('/featured-articles', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.createFeatured)
 cms_router.get('/featured-articles/:id', CMSFeaturedArticleController.getFeaturedById)
 cms_router.post('/featured-articles/:id', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.editFeatured)
-cms_router.patch('/featured-articles/status', CMSFeaturedArticleController.statusFeatured)
+cms_router.patch('/featured-articles/status/:id', CMSFeaturedArticleController.statusFeatured)
 cms_router.patch('/featured-articles/homepage', CMSFeaturedArticleController.setFeaturedHomepage)
 
 // ads
@@ -38,42 +38,43 @@ cms_router.get('/ads', CMSAdsController.getAdsList)
 cms_router.post('/ads', uploadAds, singleFileUpload, CMSAdsController.createAds)
 cms_router.get('/ads/:id', CMSAdsController.getAdsById)
 cms_router.post('/ads/:id', uploadAds, singleFileUpload, CMSAdsController.editAds)
-cms_router.patch('/ads/status', CMSAdsController.statusAds)
+cms_router.patch('/ads/status/:id', CMSAdsController.statusAds)
 
 //news
 cms_router.get('/articles', CMSArticleController.getArticleList)
 cms_router.get('/articles/:id', CMSArticleController.getArticleInfoDetail)
 cms_router.get('/articles/:userId', CMSArticleController.getArticleByUser) // for get article in user detail
 cms_router.post('/articles', createArticleUpload, multipleFileUpload, CMSArticleController.addNewArticle)
-cms_router.patch('/article/status', CMSArticleController.statusArticle)
+cms_router.patch('/article/status/:id', CMSArticleController.statusArticle)
 
 //users
 cms_router.get('/users', CMSUserController.getUserList)
 cms_router.get('/users/:id', CMSUserController.getUserInfoDetail)
-cms_router.patch('/users/status', CMSUserController.statusUser)
+cms_router.patch('/users/status/:id', CMSUserController.statusUser)
 
 //admins
 cms_router.get('/admins', CMSAdminController.getAdminList)
 cms_router.post('/admins', CMSAdminController.createAdmin)
-cms_router.patch('/admins/status', CMSAdminController.statusAdmin)
+cms_router.patch('/admins/status/:id', CMSAdminController.statusAdmin)
 
 //comments
 cms_router.get('/comments', CMSCommentController.getCommentList)
 cms_router.get('/comments/:articleId', CMSCommentController.getCommentByArticle)
 cms_router.get('/comments/:userId', CMSCommentController.getCommentByUser)
-cms_router.get('/comments/status', CMSCommentController.statusComment)
+cms_router.patch('/comments/status/:id', CMSCommentController.statusComment)
 
 //categories
 cms_router.get('/categories', CMSCategoryController.getCategoriesList)
 cms_router.get('/categories/:id', CMSCategoryController.getCategoriesById)
 cms_router.post('/categories', CMSCategoryController.addCategories)
 cms_router.post('/categories/:id', CMSCategoryController.editCategories)
-cms_router.post('/subcategories/:id', CMSCategoryController.createSubCategories)
+cms_router.post('/subcategories/:categoryId', CMSCategoryController.createSubCategories)
+cms_router.patch('/categories/status/:id', CMSCategoryController.statusCategory)
 
 //inbox 
 cms_router.get('/incoming-articles', CMSInboxController.getIncomingArticleList)
 cms_router.get('/incoming-articles/:id', CMSInboxController.incomingArticleDetail)
-cms_router.patch('/incoming-articles/status', CMSInboxController.updateStatusIncomingArticle)
+cms_router.patch('/incoming-articles/status/:id', CMSInboxController.updateStatusIncomingArticle)
 cms_router.get('/subscribed-users', CMSInboxController.getSubscribedUser)
 
 cms_router.use(errorHandler)

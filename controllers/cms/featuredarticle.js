@@ -69,9 +69,11 @@ class CMSFeaturedArticleController {
     static async statusFeatured(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
-            await FeaturedArticle.update({status},{where: {id}})
-            res.status(200).json({msg: 'Featured Article berhasil di aktivasi'})
+            const params = {
+                "status": req.body.status
+            }
+            await FeaturedArticle.update(params,{where: {id}})
+            res.status(201).json({msg: 'Status Featured Article berhasil diubah'})
         } catch (err) {
             next(err)
         }
@@ -81,7 +83,7 @@ class CMSFeaturedArticleController {
         try {
             const {id} = req.params
             await FeaturedArticle.update({isHomepage: true, status: 'Active'},{where: {id}})
-            res.status(200).json({msg: 'Featured Article berhasil di aktivasi'})
+            res.status(200).json({msg: 'Featured Article berhasil dibuat di Homepage'})
         } catch (err) {
             next(err)
         }

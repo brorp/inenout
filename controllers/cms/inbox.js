@@ -1,4 +1,4 @@
-const {User, SubmittedArticle} = require('../../models')
+const {User, SubmittedArticle, Subscriber} = require('../../models')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 class CMSInboxController {
@@ -60,13 +60,13 @@ class CMSInboxController {
         if (+page < 1) page = 1;
         if (+size < 1) size = 5;
         const { limit, offset } = getPagination(page, size);
-        let params = { isSubscribed: true }
+        let params
         if(search){
             params = {
                 'email': {[Op.iLike]: '%' + search + '%'}
-            }, { isSubscribed: true }
+            }
         }
-        const response = await User.findAndCountAll({
+        const response = await Subscriber.findAndCountAll({
             where: params,
             limit,
             offset

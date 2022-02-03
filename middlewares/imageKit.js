@@ -18,78 +18,93 @@ let axiosInstance = axios.create({
   }
 })
 
-const singleFileUpload = async (req, res, next) => {
-    try {
-        if(!req.file){
-            throw {name:`notfound`}
-        }
-        if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
-            throw { name: 'invalidformatfile' };
-        }
+// const singleFileUpload = async (req, res, next) => {
+//     try {
+//         if(!req.file){
+//             throw {name:`notfound`}
+//         }
+//         if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
+//             throw { name: 'invalidformatfile' };
+//         }
 
-        form.append('file', req.file.buffer.toString('base64'))
-        form.append('fileName', req.file.originalname)
+//         form.append('file', req.file.buffer.toString('base64'))
+//         form.append('fileName', req.file.originalname)
         
-        const response = await axiosInstance.post("/files/upload", form, {
-          headers: {
-            ...form.getHeaders()
-          },
-        })
-        req.body.profilePic = response.data.url
-        req.body.img = response.data.url
-        req.body.imgBanner = response.data.url
-        req.body.imgAds = response.data.url
-        next()
-        } 
-    catch (err) {
-        next(err);
-    }
-  };
+//         const response = await axiosInstance.post("/files/upload", form, {
+//           headers: {
+//             ...form.getHeaders()
+//           },
+//         })
+//         req.body.profilePic = response.data.url
+//         req.body.img = response.data.url
+//         req.body.imgBanner = response.data.url
+//         req.body.imgAds = response.data.url
+//         next()
+//         } 
+//     catch (err) {
+//         next(err);
+//     }
+//   };
+
+  const singleFileUpload = (req, res, next) => {
+      imagekit.upload({
+        file: req.file.buffer.toString('base64'),
+        fileName: req.file.originalname,
+      }, function(err, result){
+        if(err){
+          console.log(err)
+          next(err)
+        } else {
+          console.log(result)
+          req.body.profilePic = result.url
+          req.body.img = result.url
+          req.body.imgBanner = result.url
+          req.body.imgAds = result.url
+          next()
+        }
+      })
+  }
 
   const multipleFileUpload = async (req, res, next) => {
     try {
-        let folderName = req.body.title.replace(" ", "_");
-        // form.append('file', req.files.attachment[0].buffer.toString('base64'))
-        // form.append('fileName', req.files.attachment[0].originalname)
-        console.log(req.body)
-        // if(req.body.attachment){
-          imagekit.upload({
+      let folderName = req.body.title.replace(/ /g, "_");
+        if(req.files.attachment){
+          let result = imagekit.upload({
             file: req.files.attachment[0].buffer.toString('base64'),
             fileName: req.files.attachment[0].originalname,
-            folder: `/${folderName}`  
-          }, function(error, result) {
-              if(error){
-                console.log(error)
-              } else {
-                console.log(result)
-                req.body.attachment = result.url
-              }
-            });
-        // }
-
-
-        // if(req.body.img){
-          req.files.img.forEach(el => {
-            form.append('img', el.buffer.toString('base64'))
-            imagekit.upload({
-              file: el.buffer.toString('base64'),
-              fileName: el.originalname,
-              folder: `/${folderName}`     
-            }, function(error, result) {
-                if(error){
-                  console.log(error)
-                } else {
-                  console.log(result)
-                }
-              });
+            folder: `/${folderName}`,  
+          }).then(result => {
+            return result 
+          }).catch(error => {
+            next(error)
           })
-          // req.body.img = images
-        // }
-        next()
-        } 
-    catch (err) {
-        next(err);
-    }
+          let resultAttachment = await result
+          req.body.attachment = resultAttachment.url
+        }
+        let resultImageUpload = []
+        if(req.files.img){
+          // for(let el in req.files.img)req.files.img.forEach(async(el) => {
+            for(let el of req.files.img){
+              let resultImg = await imagekit.upload({
+                file: el.buffer.toString('base64'),
+                fileName: el.originalname,
+                folder: `/${folderName}`     
+              }).then(response => {
+                return response.url
+              }).catch(error => {
+                console.log(error);
+              });
+              resultImageUpload.push(resultImg)      
+            }
+            req.body.img = resultImageUpload
+        }
+
+        else { throw {name: 'filenotfound'}}
+
+        await next()
+    } catch (err) {
+      next(err)
+    }   
   };
 
 

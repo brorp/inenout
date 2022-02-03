@@ -42,11 +42,14 @@ const errorHandler = async (err, req, res, next ) => {
     code = 401;
     msg = "Terjadi kesalahan, mohon coba beberapa saat lagi";
   } else if (err.name === "invalidotp") {
-    code = 401;
+    code = 400;
     msg = "Kode OTP salah";
   } else if (err.name === "hasbeenliked") {
     code = 400;
     msg = "Komen sudah disukai";
+  } else if (err.name === "alreadysubscribed") {
+    code = 400;
+    msg = "Anda sudah berlangganan newsletter kami";
   } 
 
   res.status(code).json({

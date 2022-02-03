@@ -57,7 +57,7 @@ class CMSUserController {
     static async statusUser(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
+            const {status} = req.body
             await User.update({status},{where: {id}})
             res.status(200).json({msg: 'Status User berhasil diubah'})
         } catch (err) {

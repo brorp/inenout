@@ -79,8 +79,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     profilePic: DataTypes.STRING,
     status: DataTypes.STRING,
-    verifiedAt: DataTypes.STRING,
-    isSubscribed: DataTypes.BOOLEAN
+    verifiedAt: DataTypes.STRING
   }, { hooks: {
     beforeCreate: (user) => {
       user.password = getSalt(user.password)

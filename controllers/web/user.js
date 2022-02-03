@@ -1,4 +1,4 @@
-const {User} = require('../../models/index')
+const {User, Subscriber} = require('../../models/index')
 
 class UserController {
     static async getUserInfo(req,res,next){
@@ -59,9 +59,9 @@ class UserController {
     static async createSubscription(req, res, next){
         try {
             const {email} = req.body
-            const response = await User.update({isSubscribed: true},{where: {email}})
+            const response = await Subscriber.create({email})
             if(!response){
-              throw {msg: 'usernotfound'}
+              throw {msg: 'alreadysubscribed'}
             }
             res.status(201).json({message: 'Terima kasih telah berlangganan newsletter dari InEnOut'})
         } catch (err) {

@@ -3,8 +3,8 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
 
 const submitArticleUpload = upload.fields([
-  {name: 'attachment', maxCount: 10}, 
-  {name: 'img', maxCount: 10}
+  {name: 'attachment', maxCount: 1}, 
+  {name: 'img', maxCount: 10},
 ])
 
 const createArticleUpload = upload.fields([

@@ -1,7 +1,7 @@
 const{verifyToken} = require('../helpers/jwt')
-const{User} = require('../models/index')
+const{User, Admin} = require('../models/index')
 
-let authentication = async (req, res, next) => {
+let authenticationUser = async (req, res, next) => {
     try {
         const {access_token} = req.headers
         const payload = verifyToken(access_token)
@@ -14,7 +14,6 @@ let authentication = async (req, res, next) => {
         req.user = {
             id: response.id,
             email: response.email,
-            username: response.username,
             fullName: response.fullName
         }
         next()
@@ -25,4 +24,27 @@ let authentication = async (req, res, next) => {
     }
 }
 
-module.exports = authentication
+let authenticationAdmin = async (req, res, next) => {
+    try {
+        const {access_token} = req.headers
+        const payload = verifyToken(access_token)
+        const response = await Admin.findOne({
+            where: {email: payload.email}
+        })
+        if(!req.headers.access_token || !response){
+            throw ('invalidtoken')
+        }
+        req.user = {
+            id: response.id,
+            email: response.email,
+            role: response.role
+        }
+        next()
+    } 
+    catch (err) {
+        console.log(err)
+        next(err)
+    }
+}
+
+module.exports = {authenticationUser, authenticationAdmin}

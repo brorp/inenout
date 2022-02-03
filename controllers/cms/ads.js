@@ -29,7 +29,8 @@ class CMSAdsController {
     static async createAds(req, res, next){
         try {
             const {title, url, imgAds} = req.body
-            const response = await Banner.create({title, url, imgAds})
+            const status = "Active"
+            const response = await Ads.create({title, url, imgAds, status: status})
             res.status(201).json(response)
         } catch (err) {
             next(err)
@@ -60,9 +61,9 @@ class CMSAdsController {
     static async statusAds(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
+            const {status} = req.body
             await Ads.update({status},{where: {id}})
-            res.status(200).json({msg: 'status Ads berhasil diubah'})
+            res.status(200).json({msg: 'Status Ads berhasil diubah'})
         } catch (err) {
             next(err)
         }

@@ -15,12 +15,25 @@ module.exports = (sequelize, DataTypes) => {
       Article.hasOne(models.Banner, { foreignKey: "articleId" });
       Article.hasOne(models.FeaturedArticle, { foreignKey: "articleId" });
       Article.hasMany(models.ArticleSection, { foreignKey: "articleId" });
+      Article.belongsTo(models.SubCategory, { foreignKey: "tag" })
     }
   };
   Article.init({
     title: DataTypes.STRING,
     tag: DataTypes.INTEGER,
     content: DataTypes.TEXT,
+    imgThumbnail: {
+      type: DataTypes.STRING(1000),
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'Mohon masukkan gambar',
+        },
+        notEmpty: {
+          msg: 'Mohon masukkan gambar',
+        }
+      },
+    },
     img: {
       type: DataTypes.STRING(1000),
       allowNull: false,

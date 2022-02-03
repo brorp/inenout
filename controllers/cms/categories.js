@@ -96,7 +96,7 @@ class CMSCategoryController {
     static async statusCategory(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
+            const {status} = req.body
             await Category.update({status},{where: {id}})
             res.status(200).json({msg: 'Status kategori berhasil diubah'})
         } catch (err) {

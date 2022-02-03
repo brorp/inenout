@@ -41,12 +41,12 @@ class CMSAdminController {
 
     static async createAdmin(req, res, next){
         try {
-            const {username, email, password, fullName} = req.body
-            const {role} = 'Admin'
+            const {email, password, fullName} = req.body
+            const role = 'Admin'
             if(req.body.password !== req.body.password2){
                 throw {name: 'passwordnotmatch'}
             }
-            const response = await Admin.create({username, email, password, fullName, role})
+            const response = await Admin.create({email, password, fullName, role: role})
             res.status(201).json({msg: `Admin ${response.email} berhasil didaftarkan`})
         } catch (err) {
             next(err)
@@ -56,7 +56,7 @@ class CMSAdminController {
     static async statusAdmin(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
+            const {status} = req.body
             await Admin.update({status},{where: {id}})
             res.status(200).json({msg: 'Status Admin berhasil diubah'})
         } catch (err) {

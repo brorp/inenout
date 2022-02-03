@@ -1,4 +1,4 @@
-const {Banner, Article} = require('../../models')
+const {Banner, Article, Ads} = require('../../models')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
 
@@ -28,7 +28,7 @@ class CMSBannerController {
         }
     }
 
-    static async createBanner(req, res, next){
+    static async createBannerByArticle(req, res, next){
         try {
             const {imgBanner, title} = req.body
             const article = await Article.findOne({where: {title: {[Op.iLike]: '%' + title + '%'}}})
@@ -70,9 +70,11 @@ class CMSBannerController {
     static async statusBanner(req, res, next){
         try {
             const {id} = req.params
-            const {status} = req.query
-            await Banner.update({status},{where: {id}})
-            res.status(200).json({msg: 'Status Banner berhasil diubah'})
+            const params = {
+                "status": req.body.status
+            }
+            await Banner.update(params,{where: {id}})
+            res.status(201).json({msg: 'Status Banner berhasil diubah'})
         } catch (err) {
             next(err)
         }
