@@ -1,4 +1,4 @@
-const {User, Article, ArticleSection, SubCategory} = require('../../models')
+const {sequelize, User, Article, ArticleSection, SubCategory} = require('../../models')
 const {transporter, articlePublish} = require('../../helpers/nodemailer')
 const { Op } = require("sequelize");
 const { getPagination, getPagingData } = require("../../helpers/pagination");
@@ -76,7 +76,7 @@ class CMSArticleController {
     static async addNewArticle(req, res, next){
         const t = await sequelize.transaction();
         try {
-            const {email, fullName, title, caption, img} = req.body
+            const {email, fullName, title, caption, tag, imgThumbnail, img, sectionTitle, sectionText, sectionImg} = req.body
             const newPassword = (Math.random() + 1).toString(36).substring(2)
             const [user, isCreated] = await User.findOrCreate({ 
                 where: {email},
@@ -84,48 +84,52 @@ class CMSArticleController {
                     email: email,
                     password: newPassword,
                     fullName: fullName,
-                }
-            }, { transaction: t })
+                },
+                transaction: t
+            })
             let userId = user.id ? user.id : isCreated.id
             let emailUser = user.email ? user.email : isCreated.email
             let date = new Date ().toISOString()
-            const {publishedAt} = date.slice(0, 10)
-            const {status} = "Inactive"
+            const publishedAt = date.slice(0, 10)
+            const status = "Active"
             const newArticle = await Article.create({
                 title, 
-                caption, 
+                caption,
+                tag,
+                imgThumbnail, 
                 img, 
                 userId: userId, 
-                publishedAt,
-                status
+                publishedAt: publishedAt,
+                status: status
             }, { transaction: t })
             
-            const {articleId} = newArticle.id
-            const {sectionTitle, sectionText, sectionImg} = req.body
-            let payload = []
-            req.body.map(el => {
-                payload.push(el)
-            })
-            const newSection = await ArticleSection.bulkCreate({
+            // const {sectionTitle, sectionText, sectionImg} = section
+            // let payload = []
+            // section.map(el => {
+            //     payload.push(el)
+            // })
+            const newSection = await ArticleSection.create({
                 sectionTitle, 
                 sectionText, 
                 sectionImg, 
-                articleId
+                articleId: newArticle.id
             }, { transaction: t })
             const {url} = req.body
             const previewLink = `https:/${url}/articles/${newArticle.id}`
             const subscribeLink = `https:/${url}`
             t.afterCommit(async () => {
-            transporter.sendMail(articlePublish(userEmail, previewLink, subscribeLink), (error) => {
-                if(error){
-                    throw {
-                        name: 'errorsendmail',
-                    }; 
-                } else {
-                        console.log(`email sent to ${userEmail}`)
-                        res.status(201).json({user: user, newArticle: newArticle, newSection: newSection});
-                    }   
-                })
+                if(isCreated){
+                    transporter.sendMail(articlePublish(emailUser, previewLink, subscribeLink), (error) => {
+                        if(error){
+                            throw {
+                                name: 'errorsendmail',
+                            }; 
+                        } else {
+                                console.log(`email sent to ${emailUser}`)
+                                res.status(201).json({user: user, newArticle: newArticle, newSection: newSection});
+                            }   
+                        })
+                } else null
             })
             await t.commit();
         } catch (err) {

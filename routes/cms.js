@@ -10,7 +10,7 @@ const CMSCommentController = require('../controllers/cms/comment')
 const CMSInboxController = require('../controllers/cms/inbox')
 const CMSAdminController = require('../controllers/cms/admin')
 const {createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds} = require('../middlewares/multer')
-const {singleFileUpload, multipleFileUpload} = require('../middlewares/imageKit')
+const {singleFileUpload, multipleFileUpload, articleUploadAll} = require('../middlewares/imageKit')
 const cms_router = express.Router();
 const {authenticationAdmin} = require('../middlewares/authentication');
 const errorHandler = require('../middlewares/errorHandler')
@@ -44,7 +44,7 @@ cms_router.patch('/ads/status/:id', CMSAdsController.statusAds)
 cms_router.get('/articles', CMSArticleController.getArticleList)
 cms_router.get('/articles/:id', CMSArticleController.getArticleInfoDetail)
 cms_router.get('/articles/:userId', CMSArticleController.getArticleByUser) // for get article in user detail
-cms_router.post('/articles', createArticleUpload, multipleFileUpload, CMSArticleController.addNewArticle)
+cms_router.post('/articles', createArticleUpload, articleUploadAll, CMSArticleController.addNewArticle)
 cms_router.patch('/article/status/:id', CMSArticleController.statusArticle)
 
 //users

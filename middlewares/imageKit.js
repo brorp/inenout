@@ -1,5 +1,3 @@
-const FormData = require('form-data');
-const form = new FormData ()
 const ImageKit = require("imagekit");
 const axios = require("axios");
 require('dotenv').config()
@@ -17,34 +15,6 @@ let axiosInstance = axios.create({
     username: privateKey,
   }
 })
-
-// const singleFileUpload = async (req, res, next) => {
-//     try {
-//         if(!req.file){
-//             throw {name:`notfound`}
-//         }
-//         if (req.file.mimetype !== 'image/png' && req.file.mimetype !== 'image/jpeg') {
-//             throw { name: 'invalidformatfile' };
-//         }
-
-//         form.append('file', req.file.buffer.toString('base64'))
-//         form.append('fileName', req.file.originalname)
-        
-//         const response = await axiosInstance.post("/files/upload", form, {
-//           headers: {
-//             ...form.getHeaders()
-//           },
-//         })
-//         req.body.profilePic = response.data.url
-//         req.body.img = response.data.url
-//         req.body.imgBanner = response.data.url
-//         req.body.imgAds = response.data.url
-//         next()
-//         } 
-//     catch (err) {
-//         next(err);
-//     }
-//   };
 
   const singleFileUpload = (req, res, next) => {
       imagekit.upload({
@@ -72,7 +42,7 @@ let axiosInstance = axios.create({
           let result = imagekit.upload({
             file: req.files.attachment[0].buffer.toString('base64'),
             fileName: req.files.attachment[0].originalname,
-            folder: `/${folderName}`,  
+            folder: `/SUBMITTED_ARTICLES/${folderName}`,  
           }).then(result => {
             return result 
           }).catch(error => {
@@ -88,7 +58,7 @@ let axiosInstance = axios.create({
               let resultImg = await imagekit.upload({
                 file: el.buffer.toString('base64'),
                 fileName: el.originalname,
-                folder: `/${folderName}`     
+                folder: `/SUBMITTED_ARTICLES/${folderName}`     
               }).then(response => {
                 return response.url
               }).catch(error => {
@@ -107,9 +77,63 @@ let axiosInstance = axios.create({
     }   
   };
 
+  const articleUploadAll = async (req, res, next) => {
+    try {
+      let folderName = req.body.title.replace(/ /g, "_");
+        if(req.files.imgThumbnail){
+          let result = await imagekit.upload({
+            file: req.files.imgThumbnail[0].buffer.toString('base64'),
+            fileName: req.files.imgThumbnail[0].originalname,
+            folder: `/ARTICLES/${folderName}`,  
+          }).then(result => {
+            return result 
+          }).catch(error => {
+            next(error)
+          })
+          console.log(result)
+          let uploadedImage = result
+          req.body.imgThumbnail = uploadedImage.url
+        }
 
+        if(req.files.img){
+          let result = await imagekit.upload({
+            file: req.files.img[0].buffer.toString('base64'),
+            fileName: req.files.img[0].originalname,
+            folder: `/ARTICLES/${folderName}`,  
+          }).then(result => {
+            return result 
+          }).catch(error => {
+            next(error)
+          })
+          console.log(result)
+          let uploadedImage = result
+          req.body.img = uploadedImage.url
+        }
+
+        if(req.files.sectionImg){
+          let result = await imagekit.upload({
+            file: req.files.sectionImg[0].buffer.toString('base64'),
+            fileName: req.files.sectionImg[0].originalname,
+            folder: `/ARTICLES/${folderName}`,  
+          }).then(result => {
+            return result 
+          }).catch(error => {
+            next(error)
+          })
+          console.log(result)
+          let uploadedImage = await result
+          req.body.sectionImg = uploadedImage.url
+        }
+
+        else { throw {name: 'filenotfound'}}
+
+        await next()
+    } catch (err) {
+      next(err)
+    }   
+  };
 
 
     
   
-  module.exports = { singleFileUpload, multipleFileUpload }
+  module.exports = { singleFileUpload, multipleFileUpload, articleUploadAll }

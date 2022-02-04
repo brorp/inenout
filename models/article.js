@@ -24,27 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.TEXT,
     imgThumbnail: {
       type: DataTypes.STRING(1000),
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Mohon masukkan gambar',
-        },
-        notEmpty: {
-          msg: 'Mohon masukkan gambar',
-        }
-      },
     },
     img: {
       type: DataTypes.STRING(1000),
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Mohon masukkan gambar',
-        },
-        notEmpty: {
-          msg: 'Mohon masukkan gambar',
-        }
-      },
     },
     status: DataTypes.STRING,
     publishedAt: DataTypes.STRING,

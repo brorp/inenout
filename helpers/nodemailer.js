@@ -35,7 +35,7 @@ const articlePublish = (emailUser, linkPreview, subscribeLink) => {
     from: EMAIL_FROM,
     to: emailUser,
     subject: '[IN-EN-OUT] Congratulations!',
-    html: `Your article has been published to INENOUT! <br/> here's the <a href="${linkPreview}">preview</a><br/>Thank you for being part of INENOUT, please subscribe to our newsletter <a href="${subsribeLink}">here</a>`
+    html: `Your article has been published to INENOUT! <br/> here's the <a href="${linkPreview}">preview</a><br/>Thank you for being part of INENOUT, please subscribe to our newsletter <a href="${subscribeLink}">here</a>`
   };
 };
 
