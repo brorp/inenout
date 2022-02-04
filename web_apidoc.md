@@ -19,7 +19,8 @@ Peduli Lindungi is an application to manage your .... This app has :
 5. `GET /more-articles/:articleId`
 6. `GET /ads`
 
-
+### categories (no need token headers)
+1. `GET /categories`
 ### comments (need token headers)
 1. `POST  /comments/:articleId`
 2. `POST /like/:commentId`
@@ -408,6 +409,53 @@ not needed
 
 &nbsp;
 
+### GET /categories
+> Get categories for homepage bar
+
+**Request Headers**
+```json
+not needed
+```
+
+**Request Params**
+```
+not needed
+```
+
+**Request Body**
+```
+not needed
+```
+
+**Request Query**
+```
+not needed
+```
+
+**Response (200 - Ok)**
+```json
+[
+    {
+        "id": "Integer",
+        "name": "String",
+        "status": "String",
+        "createdAt": "String",
+        "updatedAt": "String",
+        "SubCategories": [
+            {
+                "id": "Integer",
+                "name": "String",
+                "categoryId": "Integer",
+                "createdAt": "String",
+                "updatedAt": "String"
+            }
+        ]
+    },
+]
+```
+
+&nbsp;
+
 ### GET /articles
 > Get articles di homepage atau queries
 
@@ -430,7 +478,7 @@ not needed
 ```json
 {
     "tag": "integer",
-    "search": "string" //by title
+    "search": "string" //by title and content
 }
 ```
 

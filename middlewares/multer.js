@@ -8,8 +8,8 @@ const submitArticleUpload = upload.fields([
 ])
 
 const createArticleUpload = upload.fields([
-  {name: 'img', maxCount: 1}, 
   {name: 'imgThumbnail', maxCount: 1},
+  {name: 'img', maxCount: 1}, 
   {name: 'sectionImg', maxCount: 1}
 ])
 

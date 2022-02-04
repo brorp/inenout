@@ -76,7 +76,7 @@ class CMSArticleController {
     static async addNewArticle(req, res, next){
         const t = await sequelize.transaction();
         try {
-            const {email, fullName, title, caption, tag, imgThumbnail, img, sectionTitle, sectionText, sectionImg} = req.body
+            const {email, fullName, title, content, tag, imgThumbnail, img, sectionTitle, sectionText, sectionImg, url} = req.body
             const newPassword = (Math.random() + 1).toString(36).substring(2)
             const [user, isCreated] = await User.findOrCreate({ 
                 where: {email},
@@ -84,17 +84,17 @@ class CMSArticleController {
                     email: email,
                     password: newPassword,
                     fullName: fullName,
+                    phoneNumber: '081212121212'
                 },
                 transaction: t
             })
             let userId = user.id ? user.id : isCreated.id
-            let emailUser = user.email ? user.email : isCreated.email
             let date = new Date ().toISOString()
             const publishedAt = date.slice(0, 10)
             const status = "Active"
             const newArticle = await Article.create({
                 title, 
-                caption,
+                content,
                 tag,
                 imgThumbnail, 
                 img, 
@@ -114,22 +114,25 @@ class CMSArticleController {
                 sectionImg, 
                 articleId: newArticle.id
             }, { transaction: t })
-            const {url} = req.body
+
             const previewLink = `https:/${url}/articles/${newArticle.id}`
             const subscribeLink = `https:/${url}`
-            t.afterCommit(async () => {
-                if(isCreated){
-                    transporter.sendMail(articlePublish(emailUser, previewLink, subscribeLink), (error) => {
+            t.afterCommit(() => {
+                    transporter.sendMail(articlePublish(email, previewLink, subscribeLink), (error) => {
                         if(error){
+                            console.log(error)
                             throw {
                                 name: 'errorsendmail',
                             }; 
                         } else {
-                                console.log(`email sent to ${emailUser}`)
-                                res.status(201).json({user: user, newArticle: newArticle, newSection: newSection});
-                            }   
-                        })
-                } else null
+                            console.log(`email sent to ${email}`)
+                            res.status(201).json({
+                                user: user, 
+                                newArticle: newArticle, 
+                                newSection: newSection
+                            });
+                        }   
+                    })
             })
             await t.commit();
         } catch (err) {

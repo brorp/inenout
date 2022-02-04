@@ -9,18 +9,22 @@ class CMSUserController {
             if (+page < 1) page = 1;
             if (+size < 1) size = 5;
             const { limit, offset } = getPagination(page, size);
-            let params;
+            let params = {
+                [Op.not]: [{'status': "Not Registered"}]
+            }
             if (search) {
                 params = {
                   [Op.or]: [
                     { 'fullName': { [Op.iLike]: '%' + search + '%' } },
                     { 'email': { [Op.iLike]: '%' + search + '%' } }
-                  ]
+                  ],
+                  [Op.not]: [{'status': "Not Registered"}]
                 }
               }
             if(filter){
                 params = {
-                    'status': filter
+                    'status': filter,
+                    [Op.not]: [{'status': "Not Registered"}]
                 }
             }
             const response = await User.findAndCountAll({

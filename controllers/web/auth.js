@@ -1,7 +1,8 @@
 const { comparePassword } = require('../../helpers/bcrypt')
 const { signToken, signPasswordLink } = require('../../helpers/jwt')
 const { getSalt } = require('../../helpers/bcrypt')
-const {User} = require('../../models/index')
+const {User, sequelize} = require('../../models/index')
+const { Op } = require('sequelize')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const { getRedis } = require('../../config/redis')
 const { makeCode } = require('../../helpers/uniqueCode')
@@ -32,35 +33,82 @@ class AuthController {
     }
 
     static async registerUser(req, res, next){
+        const t = await sequelize.transaction()
         try {
-            const {username, email, password, phoneNumber, fullName} = req.body
-            const {status} = "Active"
-            const response = await User.create({username, email, password, phoneNumber, fullName, status})
-            const OTP = makeCode(6);
-            transporter.sendMail(mailOtp(response.email, OTP), async (error) => {
-              try {
-                if(error){
-                  await User.destroy({where: {id: response.id}})
-                  throw {
-                    name: 'errorsendmail',
-                  };
-                } else{
-                  const otpToken = signToken({
-                    id: response.id,
-                    email: response.email,
-                  });
-                  await getRedis().set(`${response.id}`, OTP, 'ex', 120);
-                  res.status(201).json({
-                    message: `OTP dikirim ke ${response.email}.`,
-                    id: response.id,
-                    token: otpToken,
-                  });
-                };
-              } catch (error) {
-                next(error);
-              };
-            });
+            const {email, password, phoneNumber, fullName} = req.body
+            const findUser = await User.findOne({where: {[Op.and]: [{email: email}, {status: "Not Registered"}]}})
+            
+            if(findUser){
+              const updateUser = await User.update({
+                email: email,
+                password: getSalt(password),
+                phoneNumber: phoneNumber,
+                fullName: fullName
+              },{where: {id: findUser.id}, returning: true, transcation: t})
+              const user = updateUser[1][0].dataValues
+              t.afterCommit(async() => {
+                const OTP = makeCode(6);
+                transporter.sendMail(mailOtp(user.email, OTP), async (error) => {
+                    if(error){
+                      console.log(error)
+                      throw {
+                        name: 'errorsendmail',
+                      };
+                    } else{
+                      const otpToken = signToken({
+                        id: user.id,
+                        email: user.email,
+                      });
+                      await getRedis().set(`${user.id}`, OTP, 'ex', 120);
+                      res.status(201).json({
+                        message: `OTP dikirim ke ${user.email}.`,
+                        id: user.id,
+                        token: otpToken,
+                      });
+                    };
+                });
+              })
+              await t.commit()
+            } 
+            
+            else {
+              const newUser = await User.create(
+                { 
+                  email, 
+                  password, 
+                  phoneNumber, 
+                  fullName
+                },
+                {transaction: t}
+              )
+              t.afterCommit(async() => {
+                const OTP = makeCode(6);
+                transporter.sendMail(mailOtp(newUser.email, OTP), async(error) => {
+
+                    if(error){
+                      console.log(error)
+                      await User.destroy({where: {id: newUser.id}})
+                      throw {
+                        name: 'errorsendmail',
+                      };
+                    } else{
+                      const otpToken = signToken({
+                        id: newUser.id,
+                        email: newUser.email,
+                      });
+                      await getRedis().set(`${newUser.id}`, OTP, 'ex', 120);
+                      res.status(201).json({
+                        message: `OTP dikirim ke ${newUser.email}.`,
+                        id: newUser.id,
+                        token: otpToken,
+                      });
+                    };
+                });
+              })
+              await t.commit()
+            }
         } catch (err) {
+            await t.rollback()
             next(err)
         }
     }

@@ -16,7 +16,8 @@ class UserController {
     static async updateProfile(req, res, next){
       try {
         const {username, email, phoneNumber, fullName, profilePic} = req.body
-        await User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}})
+        const response = await User.update({username, email, phoneNumber, fullName, profilePic},{where: {id: req.user.id}, returning: true})
+        console.log()
         res.status(201).json({message: 'Profil berhasil diubah'})
       } catch (err) {
         next(err)
