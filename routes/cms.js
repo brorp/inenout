@@ -26,12 +26,12 @@ cms_router.post('/banners/:id', uploadBanner, singleFileUpload, CMSBannerControl
 cms_router.patch('/banners/status/:id', CMSBannerController.statusBanner)
 
 //featured articles
-cms_router.get('/featured-articles', CMSFeaturedArticleController.getFeaturedList)
+cms_router.get('/featured-articles/homepage', CMSFeaturedArticleController.getFeaturedHomeList)
+cms_router.get('/featured-articles/categories', CMSFeaturedArticleController.getFeaturedCategoriesList)
 cms_router.post('/featured-articles', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.createFeatured)
 cms_router.get('/featured-articles/:id', CMSFeaturedArticleController.getFeaturedById)
 cms_router.post('/featured-articles/:id', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.editFeatured)
 cms_router.patch('/featured-articles/status/:id', CMSFeaturedArticleController.statusFeatured)
-cms_router.patch('/featured-articles/homepage', CMSFeaturedArticleController.setFeaturedHomepage)
 
 // ads
 cms_router.get('/ads', CMSAdsController.getAdsList)
