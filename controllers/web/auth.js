@@ -6,6 +6,8 @@ const { Op } = require('sequelize')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const { getRedis } = require('../../config/redis')
 const { makeCode } = require('../../helpers/uniqueCode')
+const {getRedis} = require ('../../config/redis');
+
 class AuthController {
     static async userLogin (req,res,next){
         try {
@@ -18,6 +20,9 @@ class AuthController {
                     id: response.id,
                     email: response.email
                 })
+                await getRedis().del('articles')
+                await getRedis().del('featuredarticles')
+                await getRedis().del('banner')
                 res.status(200).json({
                     message: `Welcome back ${response.email} !`,
                     access_token: access_token
