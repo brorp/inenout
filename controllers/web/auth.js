@@ -6,7 +6,6 @@ const { Op } = require('sequelize')
 const {transporter, mailOtp, resetPasswordMail} = require('../../helpers/nodemailer')
 const { getRedis } = require('../../config/redis')
 const { makeCode } = require('../../helpers/uniqueCode')
-const {getRedis} = require ('../../config/redis');
 
 class AuthController {
     static async userLogin (req,res,next){
