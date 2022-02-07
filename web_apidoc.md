@@ -571,11 +571,11 @@ not needed
             "userId": "Integer",
             "articleId": "Integer",
             "status": "String",
-            "CommentLike": [
+            "CommentLikes": [
                 {
-                    "userId": "Integer"
+                    "count": "Integer"
                 }
-            ], // request pake count/length di FE buat tampilin jumlah likes
+            ],
             "User": {
                 "fullName": "String",
                 "profilePic": "String"

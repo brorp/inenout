@@ -1,4 +1,4 @@
-const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, Ads, ArticleSection} = require('../../models/index')
+const {Article, User, Comment, Banner, CommentLike, FeaturedArticle, SubmittedArticle, Ads, ArticleSection, sequelize} = require('../../models/index')
 const { Op } = require("sequelize");
 const {getRedis} = require ('../../config/redis');
 class ArticleController {
@@ -99,10 +99,16 @@ class ArticleController {
             })
             const comments = await Comment.findAll({
                 where: {articleId},
+                // attributes: [
+                //     'Comment.commentText',
+                //     [sequelize.literal(`(SELECT COUNT(*) FROM "CommentLikes" WHERE "CommentLikes".commentId = "Comment".id)`), 'count']
+                // ],
                 include: [
-                    {model: CommentLike, attributes:['userId']},
+                    {model: CommentLike, attributes:[[sequelize.literal(`(SELECT COUNT(*) FROM "CommentLikes" WHERE "CommentLikes"."commentId" = "Comment"."id")`), "count"]]},
                     {model: User, attributes:['fullName', 'profilePic']}
-                ]
+                ],
+                group: [["Comment.id"],["CommentLikes.id"],["User.id"]],
+                order: [[sequelize.literal(`"CommentLikes"."count"`),'DESC']]
             })
             res.status(200).json({
                 articles: articles,
