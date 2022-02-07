@@ -5,7 +5,7 @@ class ArticleController {
     static async getBanner(req, res, next){
         try {
             let chace = await getRedis().get("banner");
-            if (chace) {
+            if (chace && !req.query) {
                 res.status(200).json(JSON.parse(chace));
             } else {
                 const response = await Banner.findAll({ where: {status: 'Active'}},{limit: 3})
@@ -21,7 +21,7 @@ class ArticleController {
     static async getHomepageFeaturedArticle(req, res, next){
         try {
             let chace = await getRedis().get("featuredarticles");
-            if (chace) {
+            if (chace && !req.query) {
                 res.status(200).json(JSON.parse(chace));
             } else {
                 const tag = req.query.tag
@@ -54,7 +54,7 @@ class ArticleController {
     static async getArticleHome(req, res, next){
         try {
             let chace = await getRedis().get("articles");
-            if (chace) {
+            if (chace && !req.query) {
                 res.status(200).json(JSON.parse(chace));
             } else {
             const tag = req.query.tag
