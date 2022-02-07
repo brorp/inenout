@@ -27,10 +27,19 @@ class ArticleController {
                 const tag = req.query.tag
                 let params
                 if(tag){
-                    params = {where: {status: 'Active'},
-                            include: {model: Article, where: {tag: tag}}}
+                    params = {
+                        where: {status: 'Active', isHomepage: null},
+                        include: [
+                            {model: Article, attributes: ['id', 'tag'], where: {tag: tag}, 
+                            include: {model: User, attributes: ['fullName', 'profilePic']}},
+                        ]
+                    }
                 } else {
-                    params = {where: {status: 'Active', isHomepage: true}}
+                    params = {
+                        where: {status: 'Active', isHomepage: true},
+                        include: [{model: Article, attributes: ['id', 'tag'],
+                        include: {model: User, attributes: ['fullName', 'profilePic']}}]
+                    }
                 }
     
                 const response = await FeaturedArticle.findAll(params)
@@ -90,8 +99,10 @@ class ArticleController {
             })
             const comments = await Comment.findAll({
                 where: {articleId},
-                include: {model: CommentLike,
-                    attributes:['userId']}
+                include: [
+                    {model: CommentLike, attributes:['userId']},
+                    {model: User, attributes:['fullName', 'profilePic']}
+                ]
             })
             res.status(200).json({
                 articles: articles,

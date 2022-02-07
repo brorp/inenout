@@ -396,15 +396,27 @@ not needed
 
 **Response (200 - Ok)**
 ```json
-[{
-    "id": "Integer",
-    "title": "String",
-    "caption": "String",
-    "articleId": "Integer",
-    "img": "String",
-    "isHomepage": "Boolean",
-    "status": "String"
-}]
+[
+    {
+        "id": "Integer",
+        "title": "String",
+        "caption": "String",
+        "articleId": "Integer",
+        "img": "String",
+        "isHomepage": "Boolean",
+        "status": "String",
+        "createdAt": "String",
+        "updatedAt": "String",
+        "Article": {
+            "id": "Integer",
+            "tag": "Integer",
+            "User": {
+                "fullName": "String",
+                "profilePic": "String"
+            }
+        }
+    }
+]
 ```
 
 &nbsp;
@@ -563,7 +575,11 @@ not needed
                 {
                     "userId": "Integer"
                 }
-            ] // request pake count/length di FE buat tampilin jumlah likes
+            ], // request pake count/length di FE buat tampilin jumlah likes
+            "User": {
+                "fullName": "String",
+                "profilePic": "String"
+            }
         }
     ]
 }
