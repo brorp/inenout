@@ -99,10 +99,6 @@ class ArticleController {
             })
             const comments = await Comment.findAll({
                 where: {articleId},
-                // attributes: [
-                //     'Comment.commentText',
-                //     [sequelize.literal(`(SELECT COUNT(*) FROM "CommentLikes" WHERE "CommentLikes".commentId = "Comment".id)`), 'count']
-                // ],
                 include: [
                     {model: CommentLike, attributes:[[sequelize.literal(`(SELECT COUNT(*) FROM "CommentLikes" WHERE "CommentLikes"."commentId" = "Comment"."id")`), "count"]]},
                     {model: User, attributes:['fullName', 'profilePic']}
@@ -127,6 +123,7 @@ class ArticleController {
                   [Op.not]: req.params.articleId
                 }
               }, 
+            include: {model: User, attributes: ['fullName','profilePic']},
             order: [['publishedAt', 'DESC']],
             limit: 3,
             })
