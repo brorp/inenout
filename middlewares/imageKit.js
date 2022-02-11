@@ -51,6 +51,7 @@ let axiosInstance = axios.create({
           let resultAttachment = await result
           req.body.attachment = resultAttachment.url
         }
+
         let resultImageUpload = []
         if(req.files.img){
           // for(let el in req.files.img)req.files.img.forEach(async(el) => {
@@ -67,6 +68,14 @@ let axiosInstance = axios.create({
               resultImageUpload.push(resultImg)      
             }
             req.body.img = resultImageUpload
+        }
+
+        else if(!req.files.img){
+          req.body.img = null 
+        }
+
+        else if(!req.files.attachment){
+          req.body.attachment = null 
         }
 
         else { 
