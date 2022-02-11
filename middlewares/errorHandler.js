@@ -37,7 +37,7 @@ const errorHandler = async (err, req, res, next ) => {
     msg = "Tidak dapat mendapatkan info artikel tersebut";
   } else if (err.name === "invalidformat") {
     code = 400;
-    msg = "Fomat file tidak valid, masukkan format PDF/PNG/JPEG";
+    msg = "Format file tidak valid, masukkan format PDF/PNG/JPEG";
   } else if (err.name === "errorsendmail") {
     code = 401;
     msg = "Terjadi kesalahan, mohon coba beberapa saat lagi";
@@ -50,6 +50,9 @@ const errorHandler = async (err, req, res, next ) => {
   } else if (err.name === "alreadysubscribed") {
     code = 400;
     msg = "Anda sudah berlangganan newsletter kami";
+  } else if (err.name === "filenotfound") {
+    code = 400;
+    msg = "Mohon unggah file yang dibutuhkan";
   } 
 
   res.status(code).json({

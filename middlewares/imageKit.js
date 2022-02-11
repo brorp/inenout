@@ -69,7 +69,10 @@ let axiosInstance = axios.create({
             req.body.img = resultImageUpload
         }
 
-        else { throw {name: 'filenotfound'}}
+        else { 
+          req.body.img = null
+          req.body.attachment = null 
+        }
 
         await next()
     } catch (err) {
@@ -125,7 +128,9 @@ let axiosInstance = axios.create({
           req.body.sectionImg = uploadedImage.url
         }
 
-        else { throw {name: 'filenotfound'}}
+        else { 
+          throw {message: 'filenotfound'}
+        }
 
         await next()
     } catch (err) {
