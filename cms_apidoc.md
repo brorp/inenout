@@ -76,9 +76,14 @@ Peduli Lindungi is an application to manage your .... This app has :
 > Login admin
 
 **Request Headers**
+
+```json
+{
+    "access_token": "String"
+}
+    
 ```
-not needed
-```
+
 **Request Params**
 ```
 not needed
@@ -355,7 +360,110 @@ not needed
 
 &nbsp;
 
+### POST (CREATE AND EDIT)
+**Request Headers**
+```json
+{
+  "access_token": "String"
+}
+```
+**Request Params**
+```json
 
+```
+
+**Request Body**
+```json
+"POST /cms/banners" 
+"POST /cms/banners/:id"
+{
+    "title": "String",
+    "imgBanner": "File"
+}
+
+"POST /cms/featured-articles"
+"POST /cms/featured-articles/:id"
+{
+    "title": "String",
+    "caption": "String",
+    "img": "File",
+}
+
+"POST /cms/ads"
+"POST /cms/ads/:id"
+{
+    "title": "String",
+    "url": "String",
+    "imgAds": "File",
+}
+
+"POST /cms/articles"
+{
+    "email": "String",
+    "fullName": "String",
+    "title": "String",
+    "content": "Text",
+    "tag": "Integer", // (input nya fetch dari categories)
+    "imgThumbnail": "File",
+    "img": "File",
+    // request body nya json
+    "sectionTitle": "String",
+    "sectionText": "String",
+    "sectionImg": "File",
+}
+
+"POST /cms/admins"
+{
+    "email": "String",
+    "fullName": "String",
+    "password": "String",
+    "password2": "String", // password confirmation
+}
+
+"POST /cms/categories"
+"POST /cms/categories/:id"
+"POST /cms/subcategories"
+"POST /cms/subcategories/:id"
+{
+    "name": "String",
+    // request params for subcategories: categoryId
+}
+```
+
+### PATCH (CHANGE STATUS)
+### /banners/status/:id
+### /featured-articles/status/:id
+### /ads/status/:id
+### /article/status/:id
+### /users/status/:id
+### /admins/status/:id
+
+### /comments/status/:id
+
+### /categories/status/:id
+### /incoming-articles/status/:id
+
+
+**Request Headers**
+```json
+{
+  "access_token": "String"
+}
+```
+
+**Request Params**
+```json
+{
+    "status": "String", // Active, Inactive
+    "id": "Integer"
+}
+
+// Khusus yang di incoming article /incoming-articles/status/:id
+{
+    "status": "String", // Accepted, One Review, Rejected
+    "id": "Integer"
+}
+```
 
 ## Global Error
 
