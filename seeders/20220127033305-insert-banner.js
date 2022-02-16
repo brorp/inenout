@@ -5,21 +5,21 @@ module.exports = {
     const data = [{
       title: "Socialising Spotify in App Experience: A Product Case Study",
       imgBanner: "https://ik.imagekit.io/fjaskqdnu0xp/images__349__NLHmNGQdK.jpeg?ik-sdk-version=javascript-1.4.3&updatedAt=1643254350585",
-      articleId: 1,
+      urlBanner: "http://localhost:3000/articles/1",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
     },{
       title: "Socialising Spotify in App Experience: A Product Case Study",
       imgBanner: "https://ik.imagekit.io/fjaskqdnu0xp/images__349__NLHmNGQdK.jpeg?ik-sdk-version=javascript-1.4.3&updatedAt=1643254350585",
-      articleId: 2,
+      urlBanner: "http://localhost:3000/articles/2",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
     },{
       title: "Socialising Spotify in App Experience: A Product Case Study",
       imgBanner: "https://ik.imagekit.io/fjaskqdnu0xp/images__349__NLHmNGQdK.jpeg?ik-sdk-version=javascript-1.4.3&updatedAt=1643254350585",
-      articleId: 3,
+      urlBanner: "http://localhost:3000/articles/3",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()

@@ -30,12 +30,8 @@ class CMSBannerController {
 
     static async createBanner(req, res, next){
         try {
-            const {imgBanner, title} = req.body
-            const article = await Article.findOne({where: {title: {[Op.iLike]: '%' + title + '%'}}})
-            if(!article){
-                throw {name: 'articlenotfound'}
-            }
-            const response = await Banner.create({title: article.title, imgBanner, articleId: article.id})
+            const {imgBanner, title, urlBanner} = req.body
+            const response = await Banner.create({title, imgBanner, urlBanner})
             res.status(201).json(response)
         } catch (err) {
             next(err)
@@ -54,13 +50,9 @@ class CMSBannerController {
 
     static async editBanner(req, res, next){
         try {
-            const {imgBanner, title} = req.body
+            const {imgBanner, title, urlBanner} = req.body
             const {id} = req.params
-            const article = await Article.findOne({where: {[Op.iLike]: '%' + title + '%'}})
-            if(!article){
-                throw {name: 'articlenotfound'}
-            }
-            const response = await Banner.update({title: article.title, imgBanner, articleId: article.id},{where: {id}})
+            const response = await Banner.update({imgBanner, title, urlBanner},{where: {id}})
             res.status(201).json(response)
         } catch (err) {
             next(err)

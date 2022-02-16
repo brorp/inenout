@@ -454,14 +454,19 @@ not needed
 **Request Params**
 ```json
 {
-    "status": "String", // Active, Inactive
     "id": "Integer"
+}
+
+```
+**Request Body**
+```json
+{
+    "status": "String", // Active, Inactive
 }
 
 // Khusus yang di incoming article /incoming-articles/status/:id
 {
     "status": "String", // Accepted, One Review, Rejected
-    "id": "Integer"
 }
 ```
 

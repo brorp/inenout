@@ -12,7 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Article.belongsTo(models.User, { foreignKey: "userId" });
       Article.hasMany(models.Comment, { foreignKey: "articleId" })
-      Article.hasOne(models.Banner, { foreignKey: "articleId" });
       Article.hasOne(models.FeaturedArticle, { foreignKey: "articleId" });
       Article.hasMany(models.ArticleSection, { foreignKey: "articleId" });
       Article.belongsTo(models.SubCategory, { foreignKey: "tag" })

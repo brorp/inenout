@@ -9,14 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      Banner.belongsTo(models.Article, { foreignKey: "articleId" });
-    }
+    static associate(models) {}
   };
   Banner.init({
     title: DataTypes.STRING,
     imgBanner: DataTypes.STRING,
-    articleId: DataTypes.INTEGER,
+    urlBanner: DataTypes.STRING,
     status: DataTypes.STRING,
   }, { hooks: {
     beforeCreate: (banner) => {

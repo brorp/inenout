@@ -14,16 +14,8 @@ module.exports = {
       imgBanner: {
         type: Sequelize.STRING
       },
-      articleId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: {
-            tableName: "Articles",
-            key: 'id'
-          },
-          onUpdate: 'cascade',
-          onDelete: 'cascade'
-        }
+      urlBanner: {
+        type: Sequelize.STRING,
       },
       status: {
         type: Sequelize.STRING,
