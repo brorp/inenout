@@ -378,7 +378,8 @@ not needed
 "POST /cms/banners/:id"
 {
     "title": "String",
-    "imgBanner": "File"
+    "imgBanner": "File",
+    "urlBanner": "String",
 }
 
 "POST /cms/featured-articles"
