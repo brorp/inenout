@@ -360,6 +360,194 @@ not needed
 
 &nbsp;
 
+### GET BY ID
+> All CMS tables for fetching data edit form
+### /banners/:id
+### /featured-articles/:id
+### /ads/:id
+### /articles/:id (for article preview)
+### /articles/comments/:articleId (for get comment di article detail)
+### /users/:id
+### /users/articles/:userId (for get article di user detail )
+### /users/comments/:userId (for get comment di user detail)
+### /categories/:id
+### /incoming-articles/:id
+
+
+**Request Headers**
+```json
+{
+  "access_token": "String"
+}
+```
+**Request Params**
+```json
+"/banners/:id"
+"/featured-articles/:id"
+"/ads/:id"
+"/articles/:id (for article preview)"
+"/users/:id"
+{
+    "id": "Integer"
+}
+```
+
+**Request Params**
+```json
+"/articles/:userId (for get article di user detail )"
+{
+    "page": "Integer",
+    "size": "Integer"
+}
+```
+
+**Request Body**
+```
+not needed
+```
+
+**Response (200 - OK)**
+```json
+"/banners/:id"
+{
+    "id": "Integer",
+    "title": "String",
+    "imgBanner": "String",
+    "urlBanner": "String",
+    "status": "String",
+    "createdAt": "String",
+    "updatedAt": "String"
+}
+
+"/featured-articles/:id"
+{
+    "id": "Integer",
+    "title": "String",
+    "caption": "String",
+    "articleId": "Integer",
+    "img": "String",
+    "isHomepage": "Boolean",
+    "status": "String",
+    "createdAt": "String",
+    "updatedAt": "String"
+}
+
+"/ads/:id"
+{
+    "id": "Integer",
+    "title": "String",
+    "url": "String",
+    "imgAds": "String",
+    "status": "String",
+    "createdAt": "String",
+    "updatedAt": "String"
+}
+
+"/articles/:id (for article preview or edit article)"
+{
+    "id": "Integer",
+    "title": "String",
+    "tag": "Integer",
+    "content": "Text",
+    "imgThumbnail": "String",
+    "img": "String",
+    "status": "String",
+    "publishedAt": "String",
+    "userId": "Integer",
+    "createdAt": "String",
+    "updatedAt": "String",
+    "ArticleSections": [
+        {
+            "id": "Integer",
+            "sectionTitle": "String",
+            "sectionText": "Text",
+            "sectionImg": "String",
+            "articleId": "Integer",
+            "createdAt": "String",
+            "updatedAt": "String"
+        }
+    ],
+    "User": {
+        "fullName": "String",
+        "profilePic": "String"
+    }
+}
+
+"/articles/comments/:articleId (for get article di user detail )"
+[
+    {
+        "id": "Integer",
+        "commentText": "Text",
+        "userId": "Integer",
+        "articleId": "Integer",
+        "status": "String",
+        "createdAt": "String",
+        "updatedAt": "String",
+        "User": {
+            "fullName": "String"
+        }
+    },
+]
+
+"/users/:id"
+{
+    "id": "Integer",
+    "email": "String",
+    "phoneNumber": "String",
+    "fullName": "String",
+    "profilePic": "String",
+    "status": "String",
+    "verifiedAt": "String",
+    "createdAt": "String",
+    "updatedAt": "String",
+}
+
+"/users/articles/:userId (for get my article di user detail)"
+{
+    "count": "Integer",
+
+}
+
+"/users/comments/:userId (for get comment di user detail)"
+[
+    {
+        "id": "Integer",
+        "commentText": "Text",
+        "userId": "Integer",
+        "articleId": "Integer",
+        "status": "String",
+        "createdAt": "String",
+        "updatedAt": "String",
+    },
+]
+
+"/categories/:id"
+{
+    "id": "Integer",
+    "name": "String",
+    "status": "String",
+    "createdAt": "String",
+    "updatedAt": "String",
+    "SubCategories": [
+        {
+            "id": "Integer",
+            "name": "String",
+            "categoryId": "Integer",
+            "createdAt": "String",
+            "updatedAt": "String"
+        },
+    ]
+} 
+
+"/incoming-articles/:id"
+{
+    
+}
+```
+
+&nbsp;
+
+
 ### POST (CREATE AND EDIT)
 **Request Headers**
 ```json

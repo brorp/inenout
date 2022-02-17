@@ -35,7 +35,7 @@ class CMSCommentController {
             const {articleId} = req.params
             const response = await Comment.findAll({
                 where: {articleId},
-                include: {model: CommentLike}
+                include: {model: User, attributes: ['fullName']}
             })
             res.status(200).json(response)
         } catch (err) {
@@ -47,8 +47,7 @@ class CMSCommentController {
         try {
             const {userId} = req.params
             const response = await Comment.findAll({
-                where: {userId},
-                include: {model: CommentLike}
+                where: {userId}
             })
             res.status(200).json(response)
         } catch (err) {

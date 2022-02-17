@@ -63,7 +63,7 @@ class CMSArticleController {
             const {userId} = req.params
             const response = await Article.findAndCountAll({
                 where: {userId},
-                include: {model: SubCategory},
+                include: {model: SubCategory, attributes: ["id","name"]},
                 offset,
                 limit
             })

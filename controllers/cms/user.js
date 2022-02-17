@@ -46,11 +46,7 @@ class CMSUserController {
         try {
             const {id} = req.params
             const response = await User.findByPk(id, {
-                attributes: {exclude: ["password"]},
-                include: [
-                    {model: Article},
-                    {model: Comment}
-                ]
+                attributes: {exclude: ["password"]}
             })
             res.status(200).json(response)
         } catch (err) {

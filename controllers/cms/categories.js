@@ -29,7 +29,7 @@ class CMSCategoryController {
     static async getCategoriesById (req, res, next){
         try {
             const {id} = req.params
-            const response = await Category.findByPk({
+            const response = await Category.findOne({
                 where: {id},
                 include: {model: SubCategory}
             })

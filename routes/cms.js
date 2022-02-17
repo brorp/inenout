@@ -43,13 +43,15 @@ cms_router.patch('/ads/status/:id', CMSAdsController.statusAds)
 //news
 cms_router.get('/articles', CMSArticleController.getArticleList)
 cms_router.get('/articles/:id', CMSArticleController.getArticleInfoDetail)
-cms_router.get('/articles/:userId', CMSArticleController.getArticleByUser) // for get article in user detail
+cms_router.get('/articles/comments/:articleId', CMSCommentController.getCommentByArticle)
 cms_router.post('/articles', createArticleUpload, articleUploadAll, CMSArticleController.addNewArticle)
-cms_router.patch('/article/status/:id', CMSArticleController.statusArticle)
+cms_router.patch('/articles/status/:id', CMSArticleController.statusArticle)
 
 //users
 cms_router.get('/users', CMSUserController.getUserList)
 cms_router.get('/users/:id', CMSUserController.getUserInfoDetail)
+cms_router.get('/users/articles/:userId', CMSArticleController.getArticleByUser) // for get article in user detail
+cms_router.get('/users/comments/:userId', CMSCommentController.getCommentByUser)
 cms_router.patch('/users/status/:id', CMSUserController.statusUser)
 
 //admins
@@ -59,8 +61,6 @@ cms_router.patch('/admins/status/:id', CMSAdminController.statusAdmin)
 
 //comments
 cms_router.get('/comments', CMSCommentController.getCommentList)
-cms_router.get('/comments/:articleId', CMSCommentController.getCommentByArticle)
-cms_router.get('/comments/:userId', CMSCommentController.getCommentByUser)
 cms_router.patch('/comments/status/:id', CMSCommentController.statusComment)
 
 //categories
