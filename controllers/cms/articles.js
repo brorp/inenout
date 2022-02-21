@@ -76,7 +76,7 @@ class CMSArticleController {
     static async addNewArticle(req, res, next){
         const t = await sequelize.transaction();
         try {
-            const {email, fullName, title, content, tag, imgThumbnail, img, sectionTitle, sectionText, sectionImg, url} = req.body
+            const {email, fullName, title, content, tag, imgThumbnail, img, articleSection, url} = req.body
             const newPassword = (Math.random() + 1).toString(36).substring(2)
             const [user, isCreated] = await User.findOrCreate({ 
                 where: {email},
@@ -109,30 +109,30 @@ class CMSArticleController {
             //     payload.push(el)
             // })
             const newSection = await ArticleSection.create({
-                sectionTitle, 
-                sectionText, 
-                sectionImg, 
+                sectionTitle: articleSection.sectionTitle, 
+                sectionText: articleSection.sectionText, 
+                sectionImg: articleSection.sectionImg, 
                 articleId: newArticle.id
             }, { transaction: t })
 
             const previewLink = `https:/${url}/articles/${newArticle.id}`
             const subscribeLink = `https:/${url}`
             t.afterCommit(() => {
-                    transporter.sendMail(articlePublish(email, previewLink, subscribeLink), (error) => {
-                        if(error){
-                            console.log(error)
-                            throw {
-                                name: 'errorsendmail',
-                            }; 
-                        } else {
-                            console.log(`email sent to ${email}`)
-                            res.status(201).json({
-                                user: user, 
-                                newArticle: newArticle, 
-                                newSection: newSection
-                            });
-                        }   
-                    })
+                transporter.sendMail(articlePublish(email, previewLink, subscribeLink), (error) => {
+                    if(error){
+                        console.log(error)
+                        throw {
+                            name: 'errorsendmail',
+                        }; 
+                    } else {
+                        console.log(`email sent to ${email}`)
+                        res.status(201).json({
+                            user: user, 
+                            newArticle: newArticle, 
+                            newSection: newSection
+                        });
+                    }   
+                })
             })
             await t.commit();
         } catch (err) {
@@ -154,10 +154,57 @@ class CMSArticleController {
     }
 
     static async editArticle(req, res, next){
+        const t = await sequelize.transaction();
         try {
+            const {email, fullName, title, content, tag, imgThumbnail, img, sectionTitle, sectionText, sectionImg, url} = req.body
+            const newPassword = (Math.random() + 1).toString(36).substring(2)
+            const [user, isCreated] = await User.findOrCreate({ 
+                where: {email},
+                defaults: {
+                    email: email,
+                    password: newPassword,
+                    fullName: fullName,
+                    phoneNumber: '081212121212'
+                },
+                transaction: t
+            })
+            let userId = user.id ? user.id : isCreated.id
+            let date = new Date ().toISOString()
+            const publishedAt = date.slice(0, 10)
+            const status = "Active"
+            const newArticle = await Article.update({
+                title, 
+                content,
+                tag,
+                imgThumbnail, 
+                img, 
+                userId: userId, 
+                publishedAt: publishedAt,
+                status: status
+            }, { transaction: t })
             
+            // const {sectionTitle, sectionText, sectionImg} = section
+            // let payload = []
+            // section.map(el => {
+            //     payload.push(el)
+            // })
+            const newSection = await ArticleSection.update({
+                sectionTitle, 
+                sectionText, 
+                sectionImg, 
+                articleId: newArticle.id
+            }, { transaction: t })
+
+            res.status(201).json({
+                user: user, 
+                newArticle: newArticle, 
+                newSection: newSection
+            });
+
+            await t.commit();
         } catch (err) {
-            
+            await t.rollback();
+            next(err);
         }
     }
 

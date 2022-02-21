@@ -541,7 +541,12 @@ not needed
 
 "/incoming-articles/:id"
 {
-    
+    "id": "Integer",
+    "title": "String",
+    "attachment": "String",
+    "img": "Array of String",
+    "createdAt": "String",
+    "updatedAt": "String",
 }
 ```
 
@@ -596,9 +601,14 @@ not needed
     "imgThumbnail": "File",
     "img": "File",
     // request body nya json
-    "sectionTitle": "String",
-    "sectionText": "String",
-    "sectionImg": "File",
+    "articleSection": [
+        {
+            "sectionTitle": "String",
+            "sectionText": "String",
+            "sectionImg": "File",
+        }
+    ]
+
 }
 
 "POST /cms/admins"
