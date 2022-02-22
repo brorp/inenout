@@ -17,6 +17,9 @@ let axiosInstance = axios.create({
 })
 
   const singleFileUpload = (req, res, next) => {
+    if(!req.file){
+      throw {name: 'filenotfound'}
+    }
       imagekit.upload({
         file: req.file.buffer.toString('base64'),
         fileName: req.file.originalname,
@@ -33,6 +36,29 @@ let axiosInstance = axios.create({
           next()
         }
       })
+  }
+
+  const singleFileUploadEdit = (req, res, next) => {
+    if(!req.file){
+      next()
+    } else {
+      imagekit.upload({
+        file: req.file.buffer.toString('base64'),
+        fileName: req.file.originalname,
+      }, function(err, result){
+        if(err){
+          console.log(err)
+          next(err)
+        } else {
+          console.log(result)
+          req.body.profilePic = result.url
+          req.body.img = result.url
+          req.body.imgBanner = result.url
+          req.body.imgAds = result.url
+          next()
+        }
+      })
+    }
   }
 
   const multipleFileUpload = async (req, res, next) => {
@@ -150,4 +176,4 @@ let axiosInstance = axios.create({
 
     
   
-  module.exports = { singleFileUpload, multipleFileUpload, articleUploadAll }
+  module.exports = { singleFileUpload, multipleFileUpload, articleUploadAll, singleFileUploadEdit }

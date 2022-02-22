@@ -10,7 +10,7 @@ const CMSCommentController = require('../controllers/cms/comment')
 const CMSInboxController = require('../controllers/cms/inbox')
 const CMSAdminController = require('../controllers/cms/admin')
 const {createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds} = require('../middlewares/multer')
-const {singleFileUpload, multipleFileUpload, articleUploadAll} = require('../middlewares/imageKit')
+const {singleFileUpload, multipleFileUpload, articleUploadAll, singleFileUploadEdit} = require('../middlewares/imageKit')
 const cms_router = express.Router();
 const {authenticationAdmin} = require('../middlewares/authentication');
 const errorHandler = require('../middlewares/errorHandler')
@@ -22,7 +22,7 @@ cms_router.use(authenticationAdmin)
 cms_router.get('/banners', CMSBannerController.getBannerList)
 cms_router.post('/banners', uploadBanner, singleFileUpload, CMSBannerController.createBanner)
 cms_router.get('/banners/:id', CMSBannerController.getBannerById)
-cms_router.post('/banners/:id', uploadBanner, singleFileUpload, CMSBannerController.editBanner)
+cms_router.post('/banners/:id', uploadBanner, singleFileUploadEdit, CMSBannerController.editBanner)
 cms_router.patch('/banners/status/:id', CMSBannerController.statusBanner)
 
 //featured articles
@@ -30,14 +30,14 @@ cms_router.get('/featured-articles/homepage', CMSFeaturedArticleController.getFe
 cms_router.get('/featured-articles/categories', CMSFeaturedArticleController.getFeaturedCategoriesList)
 cms_router.post('/featured-articles', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.createFeatured)
 cms_router.get('/featured-articles/:id', CMSFeaturedArticleController.getFeaturedById)
-cms_router.post('/featured-articles/:id', uploadFeaturedArticle, singleFileUpload, CMSFeaturedArticleController.editFeatured)
+cms_router.post('/featured-articles/:id', uploadFeaturedArticle, singleFileUploadEdit, CMSFeaturedArticleController.editFeatured)
 cms_router.patch('/featured-articles/status/:id', CMSFeaturedArticleController.statusFeatured)
 
 // ads
 cms_router.get('/ads', CMSAdsController.getAdsList)
 cms_router.post('/ads', uploadAds, singleFileUpload, CMSAdsController.createAds)
 cms_router.get('/ads/:id', CMSAdsController.getAdsById)
-cms_router.post('/ads/:id', uploadAds, singleFileUpload, CMSAdsController.editAds)
+cms_router.post('/ads/:id', uploadAds, singleFileUploadEdit, CMSAdsController.editAds)
 cms_router.patch('/ads/status/:id', CMSAdsController.statusAds)
 
 //news
