@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     imgBanner: DataTypes.STRING,
     urlBanner: DataTypes.STRING,
+    alignment: DataTypes.ENUM("left", "right", "center", "justify"),
     status: DataTypes.STRING,
   }, { hooks: {
     beforeCreate: (banner) => {

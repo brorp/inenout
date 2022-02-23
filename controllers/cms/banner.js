@@ -30,8 +30,8 @@ class CMSBannerController {
 
     static async createBanner(req, res, next){
         try {
-            const {imgBanner, title, urlBanner} = req.body
-            const response = await Banner.create({title, imgBanner, urlBanner})
+            const {imgBanner, title, urlBanner, alignment} = req.body
+            const response = await Banner.create({title, imgBanner, urlBanner, alignment})
             res.status(201).json(response)
         } catch (err) {
             next(err)
@@ -50,9 +50,9 @@ class CMSBannerController {
 
     static async editBanner(req, res, next){
         try {
-            const {imgBanner, title, urlBanner} = req.body
+            const {imgBanner, title, urlBanner, alignment} = req.body
             const {id} = req.params
-            const response = await Banner.update({imgBanner, title, urlBanner},{where: {id}})
+            const response = await Banner.update({imgBanner, title, urlBanner, alignment},{where: {id}})
             res.status(201).json(response)
         } catch (err) {
             next(err)
