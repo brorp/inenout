@@ -9,7 +9,7 @@ const CMSCategoryController = require("../controllers/cms/categories");
 const CMSCommentController = require('../controllers/cms/comment')
 const CMSInboxController = require('../controllers/cms/inbox')
 const CMSAdminController = require('../controllers/cms/admin')
-const {createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds} = require('../middlewares/multer')
+const {createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds, uploadArticleSection} = require('../middlewares/multer')
 const {singleFileUpload, multipleFileUpload, articleUploadAll, singleFileUploadEdit} = require('../middlewares/imageKit')
 const cms_router = express.Router();
 const {authenticationAdmin} = require('../middlewares/authentication');
@@ -45,6 +45,7 @@ cms_router.get('/articles', CMSArticleController.getArticleList)
 cms_router.get('/articles/:id', CMSArticleController.getArticleInfoDetail)
 cms_router.get('/articles/comments/:articleId', CMSCommentController.getCommentByArticle)
 cms_router.post('/articles', createArticleUpload, articleUploadAll, CMSArticleController.addNewArticle)
+cms_router.post('/articles/article-section/:articleId', uploadArticleSection, singleFileUpload, CMSArticleController.createArticleSection)
 cms_router.patch('/articles/status/:id', CMSArticleController.statusArticle)
 
 //users

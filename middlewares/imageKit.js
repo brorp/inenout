@@ -9,12 +9,12 @@ const imagekit = new ImageKit({
   "urlEndpoint" : "https://ik.imagekit.io/fjaskqdnu0xp",
   "transformationPosition" : 'path' 
 });
-let axiosInstance = axios.create({
-  baseURL: "https://upload.imagekit.io/api/v1/",
-  auth: {
-    username: privateKey,
-  }
-})
+// let axiosInstance = axios.create({
+//   baseURL: "https://upload.imagekit.io/api/v1/",
+//   auth: {
+//     username: privateKey,
+//   }
+// })
 
   const singleFileUpload = (req, res, next) => {
     if(!req.file){
@@ -33,6 +33,7 @@ let axiosInstance = axios.create({
           req.body.img = result.url
           req.body.imgBanner = result.url
           req.body.imgAds = result.url
+          req.body.sectionImg = result.url
           next()
         }
       })
@@ -118,61 +119,70 @@ let axiosInstance = axios.create({
   const articleUploadAll = async (req, res, next) => {
     try {
       let folderName = req.body.title.replace(/ /g, "_");
-        if(req.files.imgThumbnail){
-          let result = await imagekit.upload({
-            file: req.files.imgThumbnail[0].buffer.toString('base64'),
-            fileName: req.files.imgThumbnail[0].originalname,
-            folder: `/ARTICLES/${folderName}`,  
-          }).then(result => {
-            return result 
-          }).catch(error => {
-            next(error)
-          })
-          console.log(result)
-          let uploadedImage = result
-          req.body.imgThumbnail = uploadedImage.url
-        }
 
-        if(req.files.img){
-          let result = await imagekit.upload({
-            file: req.files.img[0].buffer.toString('base64'),
-            fileName: req.files.img[0].originalname,
-            folder: `/ARTICLES/${folderName}`,  
-          }).then(result => {
-            return result 
-          }).catch(error => {
-            next(error)
-          })
-          console.log(result)
-          let uploadedImage = result
-          req.body.img = uploadedImage.url
-        }
+      if(req.files.imgThumbnail){
+        let result = await imagekit.upload({
+          file: req.files.imgThumbnail[0].buffer.toString('base64'),
+          fileName: req.files.imgThumbnail[0].originalname,
+          folder: `/ARTICLES/${folderName}`,  
+        }).then(result => {
+          return result 
+        }).catch(error => {
+          next(error)
+        })
+        console.log(result)
+        let uploadedImage = result
+        req.body.imgThumbnail = uploadedImage.url
+      }
 
-        if(req.files.sectionImg){
-          let result = await imagekit.upload({
-            file: req.files.sectionImg[0].buffer.toString('base64'),
-            fileName: req.files.sectionImg[0].originalname,
-            folder: `/ARTICLES/${folderName}`,  
-          }).then(result => {
-            return result 
-          }).catch(error => {
-            next(error)
-          })
-          console.log(result)
-          let uploadedImage = await result
-          req.body.sectionImg = uploadedImage.url
-        }
+      if(req.files.img){
+        let result = await imagekit.upload({
+          file: req.files.img[0].buffer.toString('base64'),
+          fileName: req.files.img[0].originalname,
+          folder: `/ARTICLES/${folderName}`,  
+        }).then(result => {
+          return result 
+        }).catch(error => {
+          next(error)
+        })
+        console.log(result)
+        let uploadedImage = result
+        req.body.img = uploadedImage.url
+      }
 
-        else { 
-          throw {message: 'filenotfound'}
-        }
+      else { 
+        throw {message: 'filenotfound'}
+      }
 
-        await next()
+      await next()
     } catch (err) {
       next(err)
     }   
   };
 
+  const articleSectionUpload = async(req, res, next) => {
+    try {
+      if(req.file){
+        let result = await imagekit.upload({
+          file: req.files.sectionImg[0].buffer.toString('base64'),
+          fileName: req.files.sectionImg[0].originalname,
+          folder: `/ARTICLES/${folderName}`,  
+        }).then(result => {
+          return result 
+        }).catch(error => {
+          next(error)
+        })
+        console.log(result)
+        let uploadedImage = await result
+        req.body.sectionImg = uploadedImage.url
+      }
+      else { 
+        throw {message: 'filenotfound'}
+      }
+    } catch (err) {
+      next(err)
+    }
+  }
 
     
   

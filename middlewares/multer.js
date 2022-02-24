@@ -17,5 +17,6 @@ const uploadProfilePic = upload.single('profilePic')
 const uploadBanner = upload.single('imgBanner')
 const uploadFeaturedArticle = upload.single('img')
 const uploadAds = upload.single('imgAds')
+const uploadArticleSection = upload.single('sectionImg')
 
-module.exports = {submitArticleUpload, uploadProfilePic, createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds}
+module.exports = {submitArticleUpload, uploadProfilePic, createArticleUpload, uploadBanner, uploadFeaturedArticle, uploadAds, uploadArticleSection}

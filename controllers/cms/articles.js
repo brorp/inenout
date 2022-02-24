@@ -76,7 +76,8 @@ class CMSArticleController {
     static async addNewArticle(req, res, next){
         const t = await sequelize.transaction();
         try {
-            const {email, fullName, title, content, tag, imgThumbnail, img, articleSection, url} = req.body
+            let url = process.env.APP_URL
+            const {email, fullName, title, content, tag, imgThumbnail, img} = req.body
             const newPassword = (Math.random() + 1).toString(36).substring(2)
             const [user, isCreated] = await User.findOrCreate({ 
                 where: {email},
@@ -102,20 +103,8 @@ class CMSArticleController {
                 publishedAt: publishedAt,
                 status: status
             }, { transaction: t })
-            
-            // const {sectionTitle, sectionText, sectionImg} = section
-            // let payload = []
-            // section.map(el => {
-            //     payload.push(el)
-            // })
-            const newSection = await ArticleSection.create({
-                sectionTitle: articleSection.sectionTitle, 
-                sectionText: articleSection.sectionText, 
-                sectionImg: articleSection.sectionImg, 
-                articleId: newArticle.id
-            }, { transaction: t })
 
-            const previewLink = `https:/${url}/articles/${newArticle.id}`
+            const previewLink = `https:/${url}articles/${newArticle.id}`
             const subscribeLink = `https:/${url}`
             t.afterCommit(() => {
                 transporter.sendMail(articlePublish(email, previewLink, subscribeLink), (error) => {
@@ -128,8 +117,7 @@ class CMSArticleController {
                         console.log(`email sent to ${email}`)
                         res.status(201).json({
                             user: user, 
-                            newArticle: newArticle, 
-                            newSection: newSection
+                            newArticle: newArticle
                         });
                     }   
                 })
@@ -138,6 +126,17 @@ class CMSArticleController {
         } catch (err) {
             await t.rollback();
             next(err);
+        }
+    }
+
+    static async createArticleSection(req, res, next){
+        try {
+            const {articleId} = req.params
+            const {sectionTitle, sectionText, sectionImg} = req.body
+            const response = await ArticleSection.create({sectionTitle, sectionText, sectionImg, articleId})
+            res.status(201).json(response)
+        } catch (err) {
+            next(err)
         }
     }
 
