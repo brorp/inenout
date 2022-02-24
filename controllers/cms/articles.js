@@ -116,8 +116,7 @@ class CMSArticleController {
                     } else {
                         console.log(`email sent to ${email}`)
                         res.status(201).json({
-                            user: user, 
-                            newArticle: newArticle
+                            articleId: newArticle.id
                         });
                     }   
                 })
