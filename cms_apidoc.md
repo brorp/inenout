@@ -573,6 +573,7 @@ not needed
     "title": "String",
     "imgBanner": "File",
     "urlBanner": "String",
+    "alignment": "ENUM('left','right','center','justify')",
 }
 
 "POST /cms/featured-articles"
