@@ -76,7 +76,7 @@ class ArticleController {
                 ],
                 where: params,
                 order: [
-                    ['publishedAt', 'DESC']
+                    ['createdAt', 'DESC']
                 ],
             })
             await getRedis().set("articles", JSON.stringify(response));
