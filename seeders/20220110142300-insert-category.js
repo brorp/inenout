@@ -13,7 +13,7 @@ module.exports = {
       updatedAt: new Date (),
       createdAt: new Date ()
     },{
-      name: "ENtertainment",
+      name: "ENtainment",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
@@ -32,7 +32,12 @@ module.exports = {
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
-    }]
+    },{
+      name: "ENlightment",
+      status: 'Active',
+      updatedAt: new Date (),
+      createdAt: new Date ()
+    },]
     await queryInterface.bulkInsert("Categories", data)
   },
 

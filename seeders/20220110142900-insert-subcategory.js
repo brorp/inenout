@@ -112,6 +112,11 @@ module.exports = {
       categoryId: 6,
       updatedAt: new Date (),
       createdAt: new Date ()
+    },{
+      name: "ENlightment",
+      categoryId: 7,
+      updatedAt: new Date (),
+      createdAt: new Date ()
     }]
     await queryInterface.bulkInsert("SubCategories", data)
   },
