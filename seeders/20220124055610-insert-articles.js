@@ -57,8 +57,7 @@ module.exports = {
         updatedAt: new Date()
       })
     })
-    let data1 = []
-    await queryInterface.bulkInsert("Articles", data1)
+    await queryInterface.bulkInsert("Articles", data)
   },
 
   down: async (queryInterface, Sequelize) => {
