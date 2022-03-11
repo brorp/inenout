@@ -27,7 +27,7 @@ class CMSArticleController {
             const response = await Article.findAndCountAll({
                 where: params,
                 include: {model: User, attributes: ['fullName', 'email']},
-                order: [["publishedAt", "DESC"]],
+                order: [["updatedAt", "DESC"]],
                 limit,
                 offset,
             })
