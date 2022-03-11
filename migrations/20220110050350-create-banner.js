@@ -11,6 +11,10 @@ module.exports = {
       title: {
         type: Sequelize.STRING
       },
+      alignment: {
+        type: Sequelize.ENUM("left", "right", "center", "justify"),
+        defaultValue: "center",
+      },
       imgBanner: {
         type: Sequelize.STRING
       },
