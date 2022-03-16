@@ -37,7 +37,7 @@ module.exports = {
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
-    },]
+    }]
     await queryInterface.bulkInsert("Categories", data)
   },
 
