@@ -29,7 +29,7 @@ class CMSCategoryController {
     static async getCategoriesForm (req, res, next){
         try {
             const response = await Category.findAll({
-                attributes: ['name']
+                attributes: ['id','name']
             })
             res.status(200).json(response)
         } catch (err) {
