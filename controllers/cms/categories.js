@@ -31,7 +31,7 @@ class CMSCategoryController {
             const response = await Category.findAll({
                 attributes: ['id','name']
             })
-            res.status(200).json(response)
+            res.status(200).json({data: response})
         } catch (err) {
             next(err)
         }

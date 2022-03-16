@@ -17,9 +17,9 @@ const s3 = new aws.S3({
 
 (async () => {
     await s3.putObject({
-        Body: "asdasdasd",
+        Body: "",
         Bucket: process.env.S3_BUCKETNAME,
-        Key: "test.txt"
+        Key: "test.png"
     })
     .promise()
 })();
