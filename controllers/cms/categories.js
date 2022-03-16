@@ -26,6 +26,17 @@ class CMSCategoryController {
         }
     }
 
+    static async getCategoriesForm (req, res, next){
+        try {
+            const response = await Category.findAll({
+                attributes: ['name']
+            })
+            res.status(200).json(response)
+        } catch (err) {
+            next(err)
+        }
+    }
+
     static async getCategoriesById (req, res, next){
         try {
             const {id} = req.params

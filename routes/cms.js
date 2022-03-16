@@ -42,6 +42,7 @@ cms_router.patch('/ads/status/:id', CMSAdsController.statusAds)
 
 //news
 cms_router.get('/articles', CMSArticleController.getArticleList)
+cms_router.get('/articles/categories', CMSCategoryController.getCategoriesForm)
 cms_router.get('/articles/:id', CMSArticleController.getArticleInfoDetail)
 cms_router.get('/articles/comments/:articleId', CMSCommentController.getCommentByArticle)
 cms_router.post('/articles', createArticleUpload, articleUploadAll, CMSArticleController.addNewArticle)
