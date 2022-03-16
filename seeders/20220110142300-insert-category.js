@@ -33,7 +33,7 @@ module.exports = {
       updatedAt: new Date (),
       createdAt: new Date ()
     },{
-      name: "ENlightment",
+      name: "ENlightenment",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()

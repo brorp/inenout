@@ -1,7 +1,7 @@
 const ImageKit = require("imagekit");
 const axios = require("axios");
 require('dotenv').config()
-const privateKey = process.env.IMAGEKIT_PRIVATE_KEY
+const privateKey = process.env.IMAGEKIT_PRIVATEKEY
 const publicKey = process.env.IMAGEKIT_PUBLIC_KEY
 const imagekit = new ImageKit({
   "publicKey" : publicKey, 
