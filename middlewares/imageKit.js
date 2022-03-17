@@ -1,5 +1,5 @@
 const ImageKit = require("imagekit");
-const axios = require("axios");
+const {getSalt} = require('../helpers/bcrypt')
 require('dotenv').config()
 const privateKey = process.env.IMAGEKIT_PRIVATE_KEY
 const publicKey = process.env.IMAGEKIT_PUBLIC_KEY
@@ -15,14 +15,15 @@ const imagekit = new ImageKit({
 //     username: privateKey,
 //   }
 // })
-
+const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toString());
   const  singleFileUpload = (req, res, next) => {
     if(!req.file){
       throw {name: 'filenotfound'}
     }
       imagekit.upload({
         file: req.file.buffer.toString('base64'),
-        fileName: req.file.originalname,
+        fileName: randomName,
+        folder: `/BANNERS_ADS_PP`
       }, function(err, result){
         if(err){
           console.log(err)
@@ -45,7 +46,8 @@ const imagekit = new ImageKit({
     } else {
       imagekit.upload({
         file: req.file.buffer.toString('base64'),
-        fileName: req.file.originalname,
+        fileName: randomName,
+        folder: `/BANNERS_ADS_PP`
       }, function(err, result){
         if(err){
           console.log(err)
@@ -64,53 +66,55 @@ const imagekit = new ImageKit({
 
   const multipleFileUpload = async (req, res, next) => {
     try {
-      let folderName = req.body.title.replace(/ /g, "_");
-        if(req.files.attachment){
-          let result = imagekit.upload({
-            file: req.files.attachment[0].buffer.toString('base64'),
-            fileName: req.files.attachment[0].originalname,
-            folder: `/SUBMITTED_ARTICLES/${folderName}`,  
-          }).then(result => {
-            return result 
-          }).catch(error => {
-            next(error)
-          })
-          let resultAttachment = await result
-          req.body.attachment = resultAttachment.url
-        }
+      const c = new Date ()
+      const d = c.toString().slice(0, 15)
+      const folderName = d.replace(/ /g, "_");
+      if(req.files.attachment){
+        let result = imagekit.upload({
+          file: req.files.attachment[0].buffer.toString('base64'),
+          fileName: randomName,
+          folder: `/SUBMITTED_ARTICLES/${folderName}`,  
+        }).then(result => {
+          return result 
+        }).catch(error => {
+          next(error)
+        })
+        let resultAttachment = await result
+        req.body.attachment = resultAttachment.url
+      }
 
-        let resultImageUpload = []
-        if(req.files.img){
-          // for(let el in req.files.img)req.files.img.forEach(async(el) => {
-            for(let el of req.files.img){
-              let resultImg = await imagekit.upload({
-                file: el.buffer.toString('base64'),
-                fileName: el.originalname,
-                folder: `/SUBMITTED_ARTICLES/${folderName}`     
-              }).then(response => {
-                return response.url
-              }).catch(error => {
-                console.log(error);
-              });
-              resultImageUpload.push(resultImg)      
-            }
-            req.body.img = resultImageUpload
-        }
+      let resultImageUpload = []
+      if(req.files.img){
+        // for(let el in req.files.img)req.files.img.forEach(async(el) => {
+          for(let el of req.files.img){
+            let resultImg = await imagekit.upload({
+              file: el.buffer.toString('base64'),
+              fileName: randomName,
+              folder: `/SUBMITTED_ARTICLES/${folderName}`     
+            }).then(response => {
+              return response.url
+            }).catch(error => {
+              console.log(error);
+            });
+            resultImageUpload.push(resultImg)      
+          }
+          req.body.img = resultImageUpload
+      }
 
-        else if(!req.files.img){
-          req.body.img = null 
-        }
+      else if(!req.files.img){
+        req.body.img = null 
+      }
 
-        else if(!req.files.attachment){
-          req.body.attachment = null 
-        }
+      else if(!req.files.attachment){
+        req.body.attachment = null 
+      }
 
-        else { 
-          req.body.img = null
-          req.body.attachment = null 
-        }
+      else { 
+        req.body.img = null
+        req.body.attachment = null 
+      }
 
-        await next()
+      await next()
     } catch (err) {
       next(err)
     }   
@@ -118,12 +122,14 @@ const imagekit = new ImageKit({
 
   const articleUploadAll = async (req, res, next) => {
     try {
-      let folderName = req.body.title.replace(/ /g, "_");
+      const c = new Date ()
+      const d = c.toString().slice(0, 15)
+      const folderName = d.replace(/ /g, "_");
 
       if(req.files.imgThumbnail){
         let result = await imagekit.upload({
           file: req.files.imgThumbnail[0].buffer.toString('base64'),
-          fileName: req.files.imgThumbnail[0].originalname,
+          fileName: randomName,
           folder: `/ARTICLES/${folderName}`,  
         }).then(result => {
           return result 
@@ -138,7 +144,7 @@ const imagekit = new ImageKit({
       if(req.files.img){
         let result = await imagekit.upload({
           file: req.files.img[0].buffer.toString('base64'),
-          fileName: req.files.img[0].originalname,
+          fileName: randomName,
           folder: `/ARTICLES/${folderName}`,  
         }).then(result => {
           return result 

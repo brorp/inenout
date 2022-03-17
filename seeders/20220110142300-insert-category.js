@@ -18,7 +18,7 @@ module.exports = {
       updatedAt: new Date (),
       createdAt: new Date ()
     },{
-      name: "ENsport",
+      name: "ENsports",
       status: 'Active',
       updatedAt: new Date (),
       createdAt: new Date ()
