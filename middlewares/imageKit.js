@@ -159,31 +159,6 @@ const imagekit = new ImageKit({
       next(err)
     }   
   };
-
-  const articleSectionUpload = async(req, res, next) => {
-    try {
-      if(req.file){
-        let result = await imagekit.upload({
-          file: req.files.sectionImg[0].buffer.toString('base64'),
-          fileName: req.files.sectionImg[0].originalname,
-          folder: `/ARTICLES/${folderName}`,  
-        }).then(result => {
-          return result 
-        }).catch(error => {
-          next(error)
-        })
-        console.log(result)
-        let uploadedImage = await result
-        req.body.sectionImg = uploadedImage.url
-      }
-      else { 
-        throw {message: 'filenotfound'}
-      }
-    } catch (err) {
-      next(err)
-    }
-  }
-
     
   
   module.exports = { singleFileUpload, multipleFileUpload, articleUploadAll, singleFileUploadEdit }
