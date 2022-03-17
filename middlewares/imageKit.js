@@ -16,7 +16,7 @@ const imagekit = new ImageKit({
 //   }
 // })
 
-  const singleFileUpload = (req, res, next) => {
+  const  singleFileUpload = (req, res, next) => {
     if(!req.file){
       throw {name: 'filenotfound'}
     }

@@ -131,6 +131,7 @@ class CMSArticleController {
     static async createArticleSection(req, res, next){
         try {
             const {articleId} = req.params
+            console.log(req.params.articleId)
             const {sectionTitle, sectionText, sectionImg} = req.body
             const response = await ArticleSection.create({sectionTitle, sectionText, sectionImg, articleId})
             res.status(201).json(response)
