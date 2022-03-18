@@ -142,7 +142,7 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
         req.body.imgThumbnail = uploadedImage.url
       }
 
-      if(req.files.img){
+      else if(req.files.img){
         let result = await imagekit.upload({
           file: req.files.img[0].buffer.toString('base64'),
           fileName: randomName,
@@ -154,7 +154,7 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
           next(error)
         })
         console.log(result)
-        let uploadedImage = result
+        let uploadedImage = await result
         req.body.img = uploadedImage.url
       }
 
