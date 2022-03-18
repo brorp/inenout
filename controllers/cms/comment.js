@@ -21,6 +21,7 @@ class CMSCommentController {
 
             const response = await Comment.findAndCountAll({
                 where: params,
+                include: {model: User, attributes: ["email"]},
                 limit,
                 offset
             })
