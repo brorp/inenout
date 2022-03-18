@@ -132,12 +132,13 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
           fileName: randomName,
           folder: `/ARTICLES/${folderName}`,  
         }).then(result => {
+          console.log(result + "<<<<<<<<<<<")
           return result 
         }).catch(error => {
           next(error)
         })
-        console.log(result.url)
-        let uploadedImage = await result
+        console.log(result)
+        let uploadedImage = result
         req.body.imgThumbnail = uploadedImage.url
       }
 
@@ -147,12 +148,13 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
           fileName: randomName,
           folder: `/ARTICLES/${folderName}`,  
         }).then(result => {
+          console.log(result + "<<<<<<<<<<<")
           return result 
         }).catch(error => {
           next(error)
         })
-        console.log(result.url)
-        let uploadedImage = await result
+        console.log(result)
+        let uploadedImage = result
         req.body.img = uploadedImage.url
       }
 
