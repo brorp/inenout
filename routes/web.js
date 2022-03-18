@@ -26,6 +26,7 @@ web_router.get('/articles/:articleId', ArticleController.getArticleDetail)
 web_router.get('/more-articles/:articleId', ArticleController.getMoreLikeThis)
 web_router.get('/ads', ArticleController.getAdsHome)
 web_router.get('/categories', CategoryController.getCategoriesList)
+web_router.patch('/subscribe', UserController.createSubscription)
 
 web_router.use(authenticationUser)
 
@@ -44,7 +45,6 @@ web_router.post('/profile',
     UserController.updateProfile)
 
 web_router.patch('/change-password', UserController.userChangePassword)
-web_router.patch('/subscribe', UserController.createSubscription)
 
 web_router.use(errorHandler)
 
