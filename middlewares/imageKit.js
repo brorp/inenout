@@ -136,7 +136,7 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
         }).catch(error => {
           next(error)
         })
-
+        console.log(result.url)
         let uploadedImage = await result
         req.body.imgThumbnail = uploadedImage.url
       }
@@ -151,7 +151,7 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
         }).catch(error => {
           next(error)
         })
-
+        console.log(result.url)
         let uploadedImage = await result
         req.body.img = uploadedImage.url
       }
