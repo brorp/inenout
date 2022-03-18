@@ -69,6 +69,8 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
       const c = new Date ()
       const d = c.toString().slice(0, 15)
       const folderName = d.replace(/ /g, "_");
+      let resultImageUpload = []
+
       if(req.files.attachment){
         let result = imagekit.upload({
           file: req.files.attachment[0].buffer.toString('base64'),
@@ -83,7 +85,6 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
         req.body.attachment = resultAttachment.url
       }
 
-      let resultImageUpload = []
       if(req.files.img){
         // for(let el in req.files.img)req.files.img.forEach(async(el) => {
           for(let el of req.files.img){
@@ -92,11 +93,12 @@ const randomName = getSalt((Date.now() + +Math.floor(Math.random() * 9999)).toSt
               fileName: randomName,
               folder: `/SUBMITTED_ARTICLES/${folderName}`     
             }).then(response => {
+              console.log(response)
               return response.url
             }).catch(error => {
               console.log(error);
             });
-            resultImageUpload.push(resultImg)      
+            resultImageUpload.push(await resultImg)      
           }
           req.body.img = resultImageUpload
       }
